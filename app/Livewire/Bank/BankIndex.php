@@ -36,8 +36,14 @@ class BankIndex extends Component
             $accounts = \App\Models\BankAccount::where('quartz_id', auth()->user()->quartz_id)->get();
         }
 
+        $userBalance = 0;
+        if (auth()->check() && auth()->user()->account) {
+            $userBalance = auth()->user()->account->balance;
+        }
+
         return view('livewire.bank.bank-index', [
-            'accounts' => $accounts
+            'accounts' => $accounts,
+            'userBalance' => $userBalance
         ]);
     }
 }

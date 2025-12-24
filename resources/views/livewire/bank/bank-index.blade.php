@@ -14,7 +14,34 @@
     </div>
 
     <div class="pb-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+
+            <!-- Financial Status Card -->
+            <div
+                class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-4 {{ $userBalance > 0 ? 'border-red-500' : 'border-green-500' }} p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Your Financial Status</p>
+                        <div class="mt-2 flex items-baseline">
+                            <p class="text-3xl font-bold {{ $userBalance > 0 ? 'text-red-600' : 'text-green-600' }}">
+                                {{ $userBalance > 0 ? 'You Owe' : 'You possess' }} LKR
+                                {{ number_format(abs($userBalance), 2) }}
+                            </p>
+                        </div>
+                        @if($userBalance > 0)
+                            <p class="text-sm text-red-500 mt-1">Please make a payment to clear your dues.</p>
+                        @else
+                            <p class="text-sm text-green-500 mt-1">You are in good standing!</p>
+                        @endif
+                    </div>
+                    <div
+                        class="p-3 rounded-full {{ $userBalance > 0 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600' }}">
+                        <i
+                            class="fas {{ $userBalance > 0 ? 'fa-exclamation-circle' : 'fa-check-circle' }} text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
             @if($accounts->isNotEmpty())
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($accounts as $account)

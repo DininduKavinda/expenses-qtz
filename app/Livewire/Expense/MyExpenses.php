@@ -7,8 +7,8 @@ use Livewire\Component;
 class MyExpenses extends Component
 {
     public $bankAccounts;
-    public $selectedSplitId;
     public $selectedBankId;
+    public $paymentAmount;
     public $showPayModal = false;
 
     public function mount()
@@ -24,68 +24,103 @@ class MyExpenses extends Component
     {
         return \App\Models\ExpenseSplit::where('user_id', auth()->id())
             ->with(['grnItem.grnSession.shop', 'grnItem.item', 'grnItem.grnSession'])
-            ->latest()
+            ->latest() // Visualization only
             ->get();
     }
 
-    public function openPayModal($splitId)
+    public function getTotalPendingProperty()
     {
-        $this->selectedSplitId = $splitId;
+        // Calculate total pending debt from Splits
+        // Alternatively, use UserAccount balance if we trust it 100%. 
+        // Let's use UserAccount as the source of truth for Debt.
+        $userAccount = \App\Models\UserAccount::where('user_id', auth()->id())->first();
+        return $userAccount ? $userAccount->balance : 0;
+    }
+
+    public function openPayModal()
+    {
+        $this->paymentAmount = $this->totalPending > 0 ? $this->totalPending : '';
         $this->showPayModal = true;
     }
 
-    public function confirmPayment()
+    public function makePayment()
     {
         $this->validate([
             'selectedBankId' => 'required|exists:bank_accounts,id',
-            'selectedSplitId' => 'required|exists:expense_splits,id'
+            'paymentAmount' => 'required|numeric|min:0.01'
         ]);
 
-        $split = \App\Models\ExpenseSplit::find($this->selectedSplitId);
-        if ($split->status === 'paid') {
-            $this->showPayModal = false;
-            return;
-        }
+        $amountToPay = (float) $this->paymentAmount;
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($split) {
-            // 1. Mark Split as Paid
-            $split->update([
-                'status' => 'paid',
-                'paid_at' => now()
-            ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($amountToPay) {
+            $userId = auth()->id();
 
-            // 2. Create Bank Deposit
-            // Description: "Payment for Item: X in GRN: Y"
-            $description = "Payment for " . $split->grnItem->item->name . " (GRN #" . $split->grnItem->grnSession->id . ")";
-
+            // 1. Create Bank Deposit (The actual money movement)
             \App\Models\BankTransaction::create([
                 'bank_account_id' => $this->selectedBankId,
-                'user_id' => auth()->id(),
-                'amount' => $split->amount,
+                'user_id' => $userId,
+                'amount' => $amountToPay,
                 'transaction_date' => now(),
-                'description' => $description,
+                'description' => "Expense Payment (Waterfall Clearance)",
                 'type' => 'deposit'
             ]);
 
-            // 3. Update Bank Balance
-            \App\Models\BankAccount::find($this->selectedBankId)->increment('balance', $split->amount);
+            // 2. Update Bank Balance
+            \App\Models\BankAccount::find($this->selectedBankId)->increment('balance', $amountToPay);
 
-            // 4. Reduce User Debt
-            $userAccount = \App\Models\UserAccount::where('user_id', auth()->id())->first();
-            if ($userAccount) {
-                $userAccount->decrement('balance', $split->amount);
+            // 3. Reduce User Debt (Global Balance)
+            $userAccount = \App\Models\UserAccount::firstOrCreate(
+                ['user_id' => $userId],
+                ['balance' => 0]
+            );
+            $userAccount->decrement('balance', $amountToPay);
+
+            // 4. Waterfall Reconciliation: Mark splits as paid starting from oldest
+            $remainingPayment = $amountToPay;
+
+            // Fetch pending splits ordered by oldest first
+            $pendingSplits = \App\Models\ExpenseSplit::where('user_id', $userId)
+                ->where('status', 'pending')
+                ->orderBy('created_at', 'asc')
+                ->get();
+
+            foreach ($pendingSplits as $split) {
+                if ($remainingPayment <= 0) break;
+
+                // For now, simpler logic: If we have enough to fully pay a split, pay it.
+                // Partial payments strictly on splits might be complex if we want to track "partial".
+                // User requirement: "if user deposit... then money is ok... show as paid"
+                // Let's assume we fully clear splits if we have coverage.
+
+                if ($remainingPayment >= $split->amount) {
+                    $split->update([
+                        'status' => 'paid',
+                        'paid_at' => now()
+                    ]);
+                    $remainingPayment -= $split->amount;
+                } else {
+                    // Partial coverage? 
+                    // Option A: Leave pending.
+                    // Option B: Mark partial? Schema doesn't support partial status easily without 'amount_paid' column.
+                    // Let's stick to: Only mark PAID if fully covered. 
+                    // The UserAccount balance handles the "Credit/Partial" reality numerically.
+                    // The Splits status is just a flag for "Is this specific item settled?".
+                    // So if I owe 100, pay 50. Debt is 50. Split is still "Pending" (visual cue).
+                    break;
+                }
             }
         });
 
         $this->showPayModal = false;
-        $this->reset(['selectedSplitId', 'selectedBankId']);
-        session()->flash('message', 'Payment successful.');
+        $this->reset(['selectedBankId', 'paymentAmount']);
+        session()->flash('message', 'Payment processed successfully.');
     }
 
     public function render()
     {
         return view('livewire.expense.my-expenses', [
-            'expenses' => $this->expenses
+            'expenses' => $this->expenses,
+            'totalPending' => $this->totalPending
         ]);
     }
 }

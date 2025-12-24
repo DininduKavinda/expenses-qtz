@@ -22,7 +22,7 @@ class ItemEdit extends Component
     public $showDeleteModal = false;
 
     protected $rules = [
-        'name' => 'required|min:2|max:100|unique:items,name,' . ',id',
+        'name' => 'required|min:2|max:100',
         'category_id' => 'required|exists:categories,id',
         'brand_id' => 'nullable|exists:brands,id',
         'unit_id' => 'required|exists:units,id',
@@ -47,12 +47,12 @@ class ItemEdit extends Component
     {
         $this->item_id = $id;
         $this->item = Item::with(['prices.shop', 'prices.unit'])->findOrFail($id);
-        
+
         $this->name = $this->item->name;
         $this->category_id = $this->item->category_id;
         $this->brand_id = $this->item->brand_id;
         $this->unit_id = $this->item->unit_id;
-        
+
         // Load existing prices
         $this->prices = $this->item->prices->map(function ($price) {
             return [
@@ -63,13 +63,13 @@ class ItemEdit extends Component
                 'date' => $price->date,
             ];
         })->toArray();
-        
+
         // If no prices exist, add one default entry
         if (empty($this->prices)) {
             $this->prices[] = [
-                'shop_id' => '', 
+                'shop_id' => '',
                 'unit_id' => $this->unit_id,
-                'price' => '', 
+                'price' => '',
                 'date' => date('Y-m-d')
             ];
         }
@@ -79,9 +79,9 @@ class ItemEdit extends Component
     {
         $this->prices[] = [
             'id' => null,
-            'shop_id' => '', 
+            'shop_id' => '',
             'unit_id' => $this->unit_id,
-            'price' => '', 
+            'price' => '',
             'date' => date('Y-m-d')
         ];
     }
@@ -93,7 +93,7 @@ class ItemEdit extends Component
             $priceId = $this->prices[$index]['id'];
             $this->item->prices()->where('id', $priceId)->delete();
         }
-        
+
         unset($this->prices[$index]);
         $this->prices = array_values($this->prices);
     }
@@ -146,7 +146,7 @@ class ItemEdit extends Component
         }
 
         $this->processing = false;
-        
+
         session()->flash('message', 'Item updated successfully!');
         $this->dispatch('item-updated');
         $this->redirect(route('items.index'), navigate: true);
