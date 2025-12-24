@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Alpine.js (Needed for dropdown + bottom sheet) -->
-    {{-- <script src="https://unpkg.com/alpinejs" defer></script> --}}
+    {{--
+    <script src="https://unpkg.com/alpinejs" defer></script> --}}
 </head>
 
 <body class="bg-gray-100 min-h-screen safe-area-padding" x-data="{ more: false }">
@@ -208,7 +209,7 @@
                     </div>
                     <span class="text-gray-200 font-medium group-hover:text-white">Units</span>
                 </a>
-                  <a href="{{ route('quartzs.index') }}" wire:navigate
+                <a href="{{ route('quartzs.index') }}" wire:navigate
                     class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
                     <div
                         class="h-9 w-9 rounded-lg bg-gradient-to-br from-red-500 to-yellow-500 flex items-center justify-center shadow-md">
@@ -217,11 +218,20 @@
                     <span class="text-gray-200 font-medium group-hover:text-white">Quartzs</span>
                 </a>
 
+                <a href="{{ route('grns.index') }}" wire:navigate
+                    class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                    <div
+                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-md">
+                        <i class="fas fa-arrow-down text-white text-sm"></i>
+                    </div>
+                    <span class="text-gray-200 font-medium group-hover:text-white">GRN</span>
+                </a>
+
                 <div class="px-2 mt-10 mb-4">
                     <p class="text-xs font-semibold text-gray-400/70 uppercase tracking-wider">Coming Soon</p>
                 </div>
 
-                @foreach ([['icon' => 'fas fa-arrow-down', 'text' => 'GRN', 'gradient' => 'from-amber-500 to-orange-500'], ['icon' => 'fas fa-arrow-up', 'text' => 'GDN', 'gradient' => 'from-rose-500 to-pink-500'], ['icon' => 'fas fa-university', 'text' => 'Bank', 'gradient' => 'from-lime-500 to-green-500'], ['icon' => 'fas fa-users', 'text' => 'Users', 'gradient' => 'from-violet-500 to-purple-500']] as $item)
+                @foreach ([['icon' => 'fas fa-arrow-up', 'text' => 'GDN', 'gradient' => 'from-rose-500 to-pink-500'], ['icon' => 'fas fa-university', 'text' => 'Bank', 'gradient' => 'from-lime-500 to-green-500'], ['icon' => 'fas fa-users', 'text' => 'Users', 'gradient' => 'from-violet-500 to-purple-500']] as $item)
                     <div class="flex items-center opacity-50 space-x-3 p-3 rounded-xl cursor-not-allowed">
                         <div
                             class="h-9 w-9 rounded-lg bg-gradient-to-br {{ $item['gradient'] }} flex items-center justify-center">

@@ -60,6 +60,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create', QuartzCreate::class)->name('quartzs.create');
         Route::get('/{quartz}/edit', QuartzEdit::class)->name('quartzs.edit');
     });
+
+    Route::prefix('grns')->group(function () {
+        Route::get('/', \App\Livewire\Grn\GrnIndex::class)->name('grns.index');
+        Route::get('/create', \App\Livewire\Grn\GrnCreate::class)->name('grns.create');
+        Route::get('/{grn}/edit', \App\Livewire\Grn\GrnEdit::class)->name('grns.edit');
+        Route::get('/{grn}', \App\Livewire\Grn\GrnShow::class)->name('grns.show');
+    });
 });
 
 require __DIR__ . '/auth.php';
