@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BankAccount extends Model
 {
-     protected $fillable = ['quartz_id', 'name', 'balance'];
+    protected $fillable = ['quartz_id', 'name', 'balance'];
 
     public function quartz()
     {

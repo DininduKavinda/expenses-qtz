@@ -227,11 +227,29 @@
                     <span class="text-gray-200 font-medium group-hover:text-white">GRN</span>
                 </a>
 
+                <a href="{{ route('banks.index') }}" wire:navigate
+                    class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                    <div
+                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-md">
+                        <i class="fas fa-university text-white text-sm"></i>
+                    </div>
+                    <span class="text-gray-200 font-medium group-hover:text-white">Bank Accounts</span>
+                </a>
+
+                <a href="{{ route('my-expenses') }}" wire:navigate
+                    class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                    <div
+                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center shadow-md">
+                        <i class="fas fa-receipt text-white text-sm"></i>
+                    </div>
+                    <span class="text-gray-200 font-medium group-hover:text-white">My Expenses</span>
+                </a>
+
                 <div class="px-2 mt-10 mb-4">
                     <p class="text-xs font-semibold text-gray-400/70 uppercase tracking-wider">Coming Soon</p>
                 </div>
 
-                @foreach ([['icon' => 'fas fa-arrow-up', 'text' => 'GDN', 'gradient' => 'from-rose-500 to-pink-500'], ['icon' => 'fas fa-university', 'text' => 'Bank', 'gradient' => 'from-lime-500 to-green-500'], ['icon' => 'fas fa-users', 'text' => 'Users', 'gradient' => 'from-violet-500 to-purple-500']] as $item)
+                @foreach ([['icon' => 'fas fa-arrow-up', 'text' => 'GDN', 'gradient' => 'from-rose-500 to-pink-500'], ['icon' => 'fas fa-users', 'text' => 'Users', 'gradient' => 'from-violet-500 to-purple-500']] as $item)
                     <div class="flex items-center opacity-50 space-x-3 p-3 rounded-xl cursor-not-allowed">
                         <div
                             class="h-9 w-9 rounded-lg bg-gradient-to-br {{ $item['gradient'] }} flex items-center justify-center">

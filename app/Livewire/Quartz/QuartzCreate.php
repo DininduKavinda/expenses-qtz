@@ -35,6 +35,13 @@ class QuartzCreate extends Component
                 'description' => $this->description,
             ]);
 
+            // Auto-create Main Bank Account
+            \App\Models\BankAccount::create([
+                'quartz_id' => $quartz->id,
+                'name' => 'Main Bank Account',
+                'balance' => 0
+            ]);
+
             $this->dispatch('notify', [
                 'type' => 'success',
                 'message' => 'Quartz type created successfully!'
@@ -42,7 +49,6 @@ class QuartzCreate extends Component
 
             $this->processing = false;
             $this->redirect(route('quartzs.index'), navigate: true);
-
         } catch (\Exception $e) {
             $this->processing = false;
             $this->dispatch('notify', [

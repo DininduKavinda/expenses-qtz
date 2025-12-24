@@ -67,6 +67,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{grn}/edit', \App\Livewire\Grn\GrnEdit::class)->name('grns.edit');
         Route::get('/{grn}', \App\Livewire\Grn\GrnShow::class)->name('grns.show');
     });
+
+    Route::prefix('banks')->group(function () {
+        Route::get('/', \App\Livewire\Bank\BankIndex::class)->name('banks.index');
+        Route::get('/{bankAccount}', \App\Livewire\Bank\BankShow::class)->name('banks.show');
+    });
+
+    Route::get('/my-expenses', \App\Livewire\Expense\MyExpenses::class)->name('my-expenses');
 });
 
 require __DIR__ . '/auth.php';

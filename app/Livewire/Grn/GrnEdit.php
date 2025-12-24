@@ -16,19 +16,25 @@ class GrnEdit extends Component
     public $bill_images = []; // New uploads
     public $existing_images = []; // Existing images
     public $items = [];
+    public $selected_participants = [];
 
     // Preload info references
     public $allQuartzs;
     public $allShops;
     public $allItems;
+    public $quartzUsers = [];
 
     public function mount(\App\Models\GrnSession $grn)
     {
-        $this->grn = $grn->load(['grnItems', 'images']);
+        $this->grn = $grn->load(['grnItems', 'images', 'participants']);
         $this->quartz_id = $grn->quartz_id;
         $this->shop_id = $grn->shop_id;
         $this->session_date = $grn->session_date->format('Y-m-d\TH:i');
         $this->existing_images = $grn->images;
+
+        // Load existing participants
+        $this->selected_participants = $grn->participants->pluck('id')->map(fn($id) => (string)$id)->toArray();
+        $this->loadQuartzUsers();
 
         foreach ($grn->grnItems as $item) {
             $this->items[] = [
@@ -45,6 +51,22 @@ class GrnEdit extends Component
         $this->allItems = \App\Models\Item::all();
     }
 
+    public function updatedQuartzId()
+    {
+        $this->loadQuartzUsers();
+        // If quartz changes, maybe reset participants?
+        $this->selected_participants = [];
+    }
+
+    public function loadQuartzUsers()
+    {
+        if ($this->quartz_id) {
+            $this->quartzUsers = \App\Models\User::where('quartz_id', $this->quartz_id)->get();
+        } else {
+            $this->quartzUsers = [];
+        }
+    }
+
     public function addItem()
     {
         $this->items[] = [
@@ -55,6 +77,7 @@ class GrnEdit extends Component
             'total_price' => 0
         ];
     }
+    // ... [Rest of method] ...
 
     public function removeItem($index)
     {
@@ -151,6 +174,9 @@ class GrnEdit extends Component
                 'session_date' => $this->session_date,
                 'status' => $status
             ]);
+
+            // Sync Participants
+            $this->grn->participants()->sync($this->selected_participants);
 
             // Sync Items: Delete all and recreate is easiest for this complexity, 
             // or smart sync. Let's delete removed ones and update/create.

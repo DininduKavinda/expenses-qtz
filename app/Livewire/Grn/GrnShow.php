@@ -15,16 +15,10 @@ class GrnShow extends Component
 
     public function confirmSession()
     {
-        // Business Rule: Can only confirm if pending.
-        // User check (e.g. Creator cannot confirm? Or anyone can confirm? Assuming logged in user can confirm if needed).
-        // Let's assume for now any user can confirm if it's pending.
-
         if ($this->grn->status !== 'confirmed') {
-            $this->grn->update([
-                'status' => 'confirmed',
-                'confirmed_by' => auth()->id(),
-                'confirmed_at' => now(),
-            ]);
+            // Use the model logic which handles transaction and splitting
+            $this->grn->processConfirmation(auth()->id());
+
             session()->flash('message', 'GRN Session confirmed successfully.');
         }
     }

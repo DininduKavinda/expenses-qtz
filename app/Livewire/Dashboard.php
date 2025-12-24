@@ -8,6 +8,11 @@ class Dashboard extends Component
 {
     public function render()
     {
-        return view('livewire.dashboard');
+        $user = auth()->user();
+        $balance = $user->account->balance ?? 0;
+
+        return view('livewire.dashboard', [
+            'balance' => $balance
+        ]);
     }
 }

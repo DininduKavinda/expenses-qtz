@@ -13,11 +13,13 @@ class GrnCreate extends Component
     public $session_date;
     public $bill_images = [];
     public $items = [];
+    public $selected_participants = [];
 
     // Preload info references
     public $allQuartzs;
     public $allShops;
     public $allItems;
+    public $quartzUsers = [];
 
     public function mount()
     {
@@ -29,9 +31,28 @@ class GrnCreate extends Component
         // Auto-select Quartz for logged in user if available
         if (auth()->user()->quartz_id) {
             $this->quartz_id = auth()->user()->quartz_id;
+            $this->loadQuartzUsers();
         }
 
         $this->addItem(); // Start with one empty item row
+    }
+
+    public function updatedQuartzId()
+    {
+        $this->loadQuartzUsers();
+    }
+
+    public function loadQuartzUsers()
+    {
+        if ($this->quartz_id) {
+            $this->quartzUsers = \App\Models\User::where('quartz_id', $this->quartz_id)->get();
+            // Default select all? Or Logged in User? Let's select all active logic later. For now empty or select all.
+            // Let's select all by default as requested "check boxes of all users... to check how many of them to divide"
+            $this->selected_participants = $this->quartzUsers->pluck('id')->map(fn($id) => (string)$id)->toArray();
+        } else {
+            $this->quartzUsers = [];
+            $this->selected_participants = [];
+        }
     }
 
     public function addItem()
@@ -123,9 +144,17 @@ class GrnCreate extends Component
                 'shop_id' => $this->shop_id,
                 'session_date' => $this->session_date,
                 'status' => $status,
-                'confirmed_by' => $status === 'confirmed' ? auth()->id() : null, // Auto-confirm if images present - logic assumption
-                'confirmed_at' => $status === 'confirmed' ? now() : null,
+                'confirmed_by' => null, // Reset auto-confirm logic? Let's keep manual confirmation for splitting clarity OR handle split here if confirmed.
+                // If we confirm here, we MUST process split.
+                // Let's set status to pending ALWAYS if we want them to review splits?
+                // OR if images present, we auto-confirm AND split.
+                // Let's stick to: Images = Confirmed. But we need to Process Split.
+                // For simplicity now: If images present -> Confirmed, AND we run processConfirmation immediately.
+                'confirmed_at' => null,
             ]);
+
+            // Save Participants
+            $session->participants()->attach($this->selected_participants);
 
             // Save Images
             foreach ($this->bill_images as $image) {
@@ -141,6 +170,14 @@ class GrnCreate extends Component
                     'unit_price' => $itemData['unit_price'],
                     'total_price' => $itemData['total_price'],
                 ]);
+            }
+
+            if ($status === 'confirmed') {
+                $session->update([
+                    'confirmed_by' => auth()->id(),
+                    'confirmed_at' => now(),
+                ]);
+                $session->processConfirmation(auth()->id());
             }
         });
 

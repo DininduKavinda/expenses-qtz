@@ -50,6 +50,26 @@
                 </div>
 
                 <div class="col-span-1 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Split Cost Among (Participants)</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        @if(count($quartzUsers) > 0)
+                            @foreach ($quartzUsers as $user)
+                                <label class="inline-flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" wire:model="selected_participants" value="{{ $user->id }}"
+                                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                    <span class="text-sm text-gray-700">{{ $user->name }}</span>
+                                </label>
+                            @endforeach
+                        @else
+                            <p class="text-sm text-gray-400">Select a Quartz to see users.</p>
+                        @endif
+                    </div>
+                    @error('selected_participants')
+                        <span class="text-red-500 text-xs block mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="col-span-1 md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Bill Images (Optional but
                         Recommended)</label>
                     <div

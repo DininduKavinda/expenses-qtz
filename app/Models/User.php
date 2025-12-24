@@ -21,7 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id', 'quartz_id', 'active'
+        'role_id',
+        'quartz_id',
+        'active'
     ];
 
     /**
@@ -55,6 +57,11 @@ class User extends Authenticatable
     public function quartz()
     {
         return $this->belongsTo(Quartz::class);
+    }
+
+    public function account()
+    {
+        return $this->hasOne(UserAccount::class);
     }
 
     public function contributions()

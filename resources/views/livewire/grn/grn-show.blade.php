@@ -86,6 +86,15 @@
                             </div>
                         </div>
                     @endif
+                    <div class="col-span-2 border-t pt-4 mt-2">
+                        <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Cost Split Among</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($grn->participants as $participant)
+                                <span
+                                    class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-lg border border-blue-100">{{ $participant->name }}</span>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Confirmation Action -->
