@@ -15,7 +15,7 @@ class RolePermissions extends Component
     {
         $this->authorize('manage-roles');
         $this->role = $role;
-        $this->selectedPermissions = $role->permissions()->pluck('id')->toArray();
+        $this->selectedPermissions = $role->permissions()->pluck('permissions.id')->toArray();
     }
 
     public function save()

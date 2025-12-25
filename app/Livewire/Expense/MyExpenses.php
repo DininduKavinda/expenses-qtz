@@ -16,7 +16,11 @@ class MyExpenses extends Component
     public function mount()
     {
         $user = auth()->user();
-        if ($user && $user->quartz_id) {
+        $isAdmin = $user->role && $user->role->slug === 'admin';
+
+        if ($isAdmin) {
+            $this->bankAccounts = \App\Models\BankAccount::all();
+        } elseif ($user && $user->quartz_id) {
             $this->bankAccounts = \App\Models\BankAccount::where('quartz_id', $user->quartz_id)->get();
         } else {
             $this->bankAccounts = collect();
@@ -25,10 +29,14 @@ class MyExpenses extends Component
 
     public function getExpensesProperty()
     {
-        return \App\Models\ExpenseSplit::where('user_id', auth()->id())
-            ->with(['grnItem.grnSession.shop', 'grnItem.item', 'grnItem.grnSession'])
-            ->latest() // Visualization only
-            ->get();
+        $isAdmin = auth()->user()->role && auth()->user()->role->slug === 'admin';
+        $query = \App\Models\ExpenseSplit::with(['grnItem.grnSession.shop', 'grnItem.item', 'grnItem.grnSession', 'user']);
+
+        if (!$isAdmin) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query->latest()->get();
     }
 
     public function getTotalPendingProperty()

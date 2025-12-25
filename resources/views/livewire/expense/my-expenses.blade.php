@@ -5,10 +5,10 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div>
                     <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
-                        {{ __('My Expenses') }}
+                        {{ auth()->user()->role?->slug === 'admin' ? __('Global Expense Audit') : __('My Expenses') }}
                     </h2>
                     <p class="text-sm text-gray-500 mt-2">
-                        Track and manage your expense contributions
+                        {{ auth()->user()->role?->slug === 'admin' ? 'Monitor all shared expense contributions across the system' : 'Track and manage your expense contributions' }}
                     </p>
                 </div>
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
@@ -90,6 +90,11 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                     Shop
                                 </th>
+                                @if(auth()->user()->role?->slug === 'admin')
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Member
+                                    </th>
+                                @endif
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                     Your Share
                                 </th>
@@ -136,6 +141,18 @@
                                             {{ $expense->grnItem->grnSession->shop->name ?? '-' }}
                                         </div>
                                     </td>
+                                    @if(auth()->user()->role?->slug === 'admin')
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center mr-2">
+                                                    <span class="text-xs font-bold text-indigo-700">{{ substr($expense->user->name, 0, 1) }}</span>
+                                                </div>
+                                                <div class="text-sm text-gray-900 font-medium">
+                                                    {{ $expense->user->name }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @endif
                                     <td class="px-6 py-4 whitespace-nowrap text-right">
                                         <div class="text-lg font-bold text-gray-900">
                                             LKR {{ number_format($expense->amount, 2) }}
@@ -166,7 +183,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-12 text-center">
+                                    <td colspan="{{ auth()->user()->role?->slug === 'admin' ? 6 : 5 }}" class="px-6 py-12 text-center">
                                         <div class="text-gray-400">
                                             <svg class="mx-auto h-12 w-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />

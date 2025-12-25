@@ -37,16 +37,22 @@ class BankIndex extends Component
         $userDebt = 0;
         $userCredit = 0;
 
-        if (auth()->user()->quartz_id) {
-            $accounts = \App\Models\BankAccount::where('quartz_id', auth()->user()->quartz_id)->get();
+        $isAdmin = auth()->user()->role && auth()->user()->role->slug === 'admin';
 
+        if ($isAdmin) {
+            $accounts = \App\Models\BankAccount::with('quartz')->get();
+        } elseif (auth()->user()->quartz_id) {
+            $accounts = \App\Models\BankAccount::where('quartz_id', auth()->user()->quartz_id)->get();
+        }
+
+        // Keep debt/credit personal even for admin, or fetch it as is.
+        if (auth()->user()->quartz_id || $isAdmin) {
+            // ... (rest of logic for personal stats remains relative to auth()->id())
             // Total Gross Debt (Pending splits)
             $userDebt = \App\Models\ExpenseSplit::where('user_id', auth()->id())
                 ->where('status', 'pending')
                 ->sum('amount');
 
-            // Total Credit (Unapplied deposits)
-            // Sum of deposits - Sum of withdrawals linked to deposits
             $totalDeposits = \App\Models\BankTransaction::where('user_id', auth()->id())
                 ->where('type', 'deposit')
                 ->sum('amount');

@@ -90,4 +90,9 @@ class User extends Authenticatable
         // If we want strict RBAC, we check the pivot table.
         return $this->role->permissions()->where('slug', $permissionSlug)->exists();
     }
+
+    public function userAccount()
+    {
+        return $this->belongsTo(UserAccount::class);
+    }
 }

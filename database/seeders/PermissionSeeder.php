@@ -37,6 +37,8 @@ class PermissionSeeder extends Seeder
             'audit-logs' => 'Audit Log Viewing',
             'scheduled-collections' => 'Scheduled Collection Management',
             'user-accounts' => 'User Account Management',
+            'reports' => 'Business Reports',
+            'settings' => 'System Settings',
         ];
 
         $actions = [

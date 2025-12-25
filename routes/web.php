@@ -88,6 +88,8 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/my-expenses', \App\Livewire\Expense\MyExpenses::class)->name('my-expenses');
+    Route::get('/reports', \App\Livewire\Report\ReportIndex::class)->name('reports');
+    Route::get('/settings', \App\Livewire\Settings\SettingsIndex::class)->name('settings');
 });
 
 require __DIR__ . '/auth.php';
