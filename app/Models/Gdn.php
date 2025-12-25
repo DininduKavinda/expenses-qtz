@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gdn extends Model
 {
-   protected $fillable = ['user_id', 'quartz_id', 'gdn_date', 'remarks'];
+    protected $fillable = ['user_id', 'quartz_id', 'gdn_date', 'remarks'];
+
+    protected $casts = [
+        'gdn_date' => 'date',
+    ];
 
     public function user()
     {

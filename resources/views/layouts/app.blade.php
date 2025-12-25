@@ -49,21 +49,25 @@
                 <span class="text-xs font-medium text-gray-700">Dashboard</span>
             </a>
 
-            <a href="{{ route('categories.index') }}" wire:navigate class="flex flex-col items-center space-y-1 p-2">
-                <div
-                    class="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-md">
-                    <i class="fas fa-tags text-white text-sm"></i>
-                </div>
-                <span class="text-xs font-medium text-gray-700">Categories</span>
-            </a>
+            @can('view-any-categories')
+                <a href="{{ route('categories.index') }}" wire:navigate class="flex flex-col items-center space-y-1 p-2">
+                    <div
+                        class="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-md">
+                        <i class="fas fa-tags text-white text-sm"></i>
+                    </div>
+                    <span class="text-xs font-medium text-gray-700">Categories</span>
+                </a>
+            @endcan
 
-            <a href="{{ route('brands.index') }}" wire:navigate class="flex flex-col items-center space-y-1 p-2">
-                <div
-                    class="h-10 w-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                    <i class="fas fa-copyright text-white text-sm"></i>
-                </div>
-                <span class="text-xs font-medium text-gray-700">Brands</span>
-            </a>
+            @can('view-any-brands')
+                <a href="{{ route('brands.index') }}" wire:navigate class="flex flex-col items-center space-y-1 p-2">
+                    <div
+                        class="h-10 w-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                        <i class="fas fa-copyright text-white text-sm"></i>
+                    </div>
+                    <span class="text-xs font-medium text-gray-700">Brands</span>
+                </a>
+            @endcan
 
             <!-- MORE BUTTON -->
             <button @click="more = true" class="flex flex-col items-center space-y-1 p-2">
@@ -86,30 +90,48 @@
             <h2 class="text-lg font-semibold text-gray-800 mb-4">More Options</h2>
 
             <div class="grid grid-cols-3 gap-4 text-center">
-                <a href="{{ route('items.index') }}" wire:navigate class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
-                    <i class="fas fa-cube text-xl mb-1"></i>
-                    <p class="text-xs font-semibold">Items</p>
-                </a>
-                <a href="{{ route('shops.index') }}" class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
-                    <i class="fas fa-shop text-xl mb-1"></i>
-                    <p class="text-xs font-semibold">Shops</p>
-                </a>
-                <a href="{{ route('units.index') }}" wire:navigate class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
-                    <i class="fas fa-balance-scale text-xl mb-1"></i>
-                    <p class="text-xs font-semibold">Units</p>
-                </a>
-                <a href="{{ route('quartzs.index') }}" class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
-                    <i class="fas fa-home text-xl mb-1"></i>
-                    <p class="text-xs font-semibold">Quartzs</p>
-                </a>
-                <a href="#" class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
-                    <i class="fas fa-arrow-up text-xl mb-1"></i>
-                    <p class="text-xs font-semibold">GDN</p>
-                </a>
-                <a href="#" class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
-                    <i class="fas fa-user text-xl mb-1"></i>
-                    <p class="text-xs font-semibold">Profile</p>
-                </a>
+                @can('view-any-items')
+                    <a href="{{ route('items.index') }}" wire:navigate class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
+                        <i class="fas fa-cube text-xl mb-1"></i>
+                        <p class="text-xs font-semibold">Items</p>
+                    </a>
+                @endcan
+                @can('view-any-shops')
+                    <a href="{{ route('shops.index') }}" class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
+                        <i class="fas fa-shop text-xl mb-1"></i>
+                        <p class="text-xs font-semibold">Shops</p>
+                    </a>
+                @endcan
+                @can('view-any-units')
+                    <a href="{{ route('units.index') }}" wire:navigate class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
+                        <i class="fas fa-balance-scale text-xl mb-1"></i>
+                        <p class="text-xs font-semibold">Units</p>
+                    </a>
+                @endcan
+                @can('view-any-quartzs')
+                    <a href="{{ route('quartzs.index') }}" class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
+                        <i class="fas fa-home text-xl mb-1"></i>
+                        <p class="text-xs font-semibold">Quartzs</p>
+                    </a>
+                @endcan
+                @can('view-any-gdns')
+                    <a href="{{ route('gdns.index') }}" wire:navigate class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
+                        <i class="fas fa-arrow-up text-xl mb-1"></i>
+                        <p class="text-xs font-semibold">GDN</p>
+                    </a>
+                @endcan
+                @can('view-any-users')
+                    <a href="{{ route('users.index') }}" wire:navigate class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
+                        <i class="fas fa-users text-xl mb-1"></i>
+                        <p class="text-xs font-semibold">Users</p>
+                    </a>
+                @endcan
+                @can('view-any-roles')
+                    <a href="{{ route('roles.index') }}" wire:navigate class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
+                        <i class="fas fa-user-shield text-xl mb-1"></i>
+                        <p class="text-xs font-semibold">Roles</p>
+                    </a>
+                @endcan
                 <a href="#" class="p-4 rounded-xl bg-gray-100 hover:bg-gray-200">
                     <i class="fas fa-cog text-xl mb-1"></i>
                     <p class="text-xs font-semibold">Settings</p>
@@ -165,99 +187,141 @@
                     </div>
                     <span class="text-gray-200 font-medium">Dashboard</span>
                 </a>
-                <a href="{{ route('categories.index') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10">
-                    <div
-                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                        <i class="fas fa-tags text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 font-medium">Categories</span>
-                </a>
-                <a href="{{ route('brands.index') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10">
-                    <div
-                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                        <i class="fas fa-copyright text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 font-medium">Brands</span>
-                </a>
+                @can('view-any-categories')
+                    <a href="{{ route('categories.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                            <i class="fas fa-tags text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium">Categories</span>
+                    </a>
+                @endcan
 
-                <a href="{{ route('items.index') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10">
-                    <div
-                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
-                        <i class="fas fa-cube text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 font-medium">Items</span>
-                </a>
+                @can('view-any-brands')
+                    <a href="{{ route('brands.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                            <i class="fas fa-copyright text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium">Brands</span>
+                    </a>
+                @endcan
 
-                <a href="{{ route('shops.index') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10">
-                    <div
-                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-yellow-500 to-teal-500 flex items-center justify-center">
-                        <i class="fas fa-shop text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 font-medium">Shops</span>
-                </a>
+                @can('view-any-items')
+                    <a href="{{ route('items.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+                            <i class="fas fa-cube text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium">Items</span>
+                    </a>
+                @endcan
 
+                @can('view-any-shops')
+                    <a href="{{ route('shops.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl hover:bg-white/10">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-yellow-500 to-teal-500 flex items-center justify-center">
+                            <i class="fas fa-shop text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium">Shops</span>
+                    </a>
+                @endcan
 
-                <a href="{{ route('units.index') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
-                    <div
-                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-md">
-                        <i class="fas fa-balance-scale text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 font-medium group-hover:text-white">Units</span>
-                </a>
-                <a href="{{ route('quartzs.index') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
-                    <div
-                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-red-500 to-yellow-500 flex items-center justify-center shadow-md">
-                        <i class="fas fa-home text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 font-medium group-hover:text-white">Quartzs</span>
-                </a>
+                @can('view-any-units')
+                    <a href="{{ route('units.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-md">
+                            <i class="fas fa-balance-scale text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium group-hover:text-white">Units</span>
+                    </a>
+                @endcan
 
-                <a href="{{ route('grns.index') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
-                    <div
-                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-md">
-                        <i class="fas fa-arrow-down text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 font-medium group-hover:text-white">GRN</span>
-                </a>
+                @can('view-any-quartzs')
+                    <a href="{{ route('quartzs.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-red-500 to-yellow-500 flex items-center justify-center shadow-md">
+                            <i class="fas fa-home text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium group-hover:text-white">Quartzs</span>
+                    </a>
+                @endcan
 
-                <a href="{{ route('banks.index') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
-                    <div
-                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-md">
-                        <i class="fas fa-university text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 font-medium group-hover:text-white">Bank Accounts</span>
-                </a>
+                @can('view-any-grns')
+                    <a href="{{ route('grns.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-md">
+                            <i class="fas fa-arrow-down text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium group-hover:text-white">GRN</span>
+                    </a>
+                @endcan
 
-                <a href="{{ route('my-expenses') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
-                    <div
-                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center shadow-md">
-                        <i class="fas fa-receipt text-white text-sm"></i>
-                    </div>
-                    <span class="text-gray-200 font-medium group-hover:text-white">My Expenses</span>
-                </a>
+                @can('view-any-banks')
+                    <a href="{{ route('banks.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-md">
+                            <i class="fas fa-university text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium group-hover:text-white">Bank Accounts</span>
+                    </a>
+                @endcan
+
+                @can('view-any-expense-splits')
+                    <a href="{{ route('my-expenses') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center shadow-md">
+                            <i class="fas fa-receipt text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium group-hover:text-white">My Expenses</span>
+                    </a>
+                @endcan
 
                 <div class="px-2 mt-10 mb-4">
-                    <p class="text-xs font-semibold text-gray-400/70 uppercase tracking-wider">Coming Soon</p>
+                    <p class="text-xs font-semibold text-gray-400/70 uppercase tracking-wider">Management</p>
                 </div>
 
-                @foreach ([['icon' => 'fas fa-arrow-up', 'text' => 'GDN', 'gradient' => 'from-rose-500 to-pink-500'], ['icon' => 'fas fa-users', 'text' => 'Users', 'gradient' => 'from-violet-500 to-purple-500']] as $item)
-                    <div class="flex items-center opacity-50 space-x-3 p-3 rounded-xl cursor-not-allowed">
+                @can('view-any-gdns')
+                    <a href="{{ route('gdns.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
                         <div
-                            class="h-9 w-9 rounded-lg bg-gradient-to-br {{ $item['gradient'] }} flex items-center justify-center">
-                            <i class="{{ $item['icon'] }} text-white text-sm"></i>
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center shadow-md">
+                            <i class="fas fa-arrow-up text-white text-sm"></i>
                         </div>
-                        <span class="text-gray-400/70 font-medium">{{ $item['text'] }}</span>
-                    </div>
-                @endforeach
+                        <span class="text-gray-200 font-medium group-hover:text-white">Despatch Notes</span>
+                    </a>
+                @endcan
+
+                @can('view-any-users')
+                    <a href="{{ route('users.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center shadow-md">
+                            <i class="fas fa-users text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium group-hover:text-white">User Management</span>
+                    </a>
+                @endcan
+
+                @can('view-any-roles')
+                    <a href="{{ route('roles.index') }}" wire:navigate
+                        class="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 hover:translate-x-1 group">
+                        <div
+                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center shadow-md">
+                            <i class="fas fa-user-shield text-white text-sm"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium group-hover:text-white">Role Management</span>
+                    </a>
+                @endcan
             </nav>
 
             <!-- PROFILE DROPDOWN -->

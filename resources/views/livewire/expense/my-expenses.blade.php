@@ -31,14 +31,25 @@
                         </div>
                     </div>
                     
-                    <!-- Pay Button -->
-                    <button wire:click="openPayModal"
-                        class="px-6 py-3.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold shadow-md hover:shadow-lg transition duration-150 ease-in-out flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                        Make Payment
-                    </button>
+                    <!-- Pay Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        @if($availableCredit > 0)
+                            <button wire:click="openApplyDepositModal"
+                                class="px-6 py-3.5 bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100 font-semibold shadow-sm transition duration-150 ease-in-out flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Apply Credit (LKR {{ number_format($availableCredit, 2) }})
+                            </button>
+                        @endif
+                        <button wire:click="openPayModal"
+                            class="px-6 py-3.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold shadow-md hover:shadow-lg transition duration-150 ease-in-out flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            Make Payment
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -263,6 +274,63 @@
                         <button wire:click="makePayment"
                             class="px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
                             Confirm Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Apply Credit Modal -->
+    @if($showApplyDepositModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 p-4">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Apply Available Credit</h3>
+                        <button wire:click="$set('showApplyDepositModal', false)" class="text-gray-400 hover:text-gray-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="text-center py-6">
+                        <div class="inline-flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900">LKR {{ number_format($availableCredit, 2) }}</h4>
+                        <p class="text-sm text-gray-500">Total Available Credit</p>
+                    </div>
+
+                    <p class="text-sm text-gray-600 mb-6 text-center">
+                        Would you like to apply your available credit to settle your oldest pending expenses?
+                    </p>
+
+                    @if($totalPending > 0)
+                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4">
+                            <div class="flex items-center text-sm font-medium text-blue-700 mb-1">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Pending Debt
+                            </div>
+                            <p class="text-lg font-bold text-blue-800">LKR {{ number_format($totalPending, 2) }}</p>
+                        </div>
+                    @endif
+                </div>
+
+                <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                    <div class="flex justify-end space-x-3">
+                        <button wire:click="$set('showApplyDepositModal', false)"
+                            class="px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
+                            Cancel
+                        </button>
+                        <button wire:click="applyCredit"
+                            class="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out font-bold">
+                            Apply Credit Now
                         </button>
                     </div>
                 </div>

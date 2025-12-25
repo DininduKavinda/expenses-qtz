@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class GdnItem extends Model
 {
-     protected $fillable = ['gdn_id', 'item_id', 'quantity', 'unit_price', 'total_price'];
+    protected $fillable = ['gdn_id', 'grn_item_id', 'quantity'];
 
     public function gdn()
     {
         return $this->belongsTo(Gdn::class);
     }
 
-    public function item()
+    public function grnItem()
     {
-        return $this->belongsTo(Item::class);
+        return $this->belongsTo(GrnItem::class);
     }
 }

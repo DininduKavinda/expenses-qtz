@@ -99,16 +99,33 @@
 
                 <!-- Confirmation Action -->
                 @if($grn->status !== 'confirmed')
-                    <div class="px-6 py-4 bg-yellow-50/50 border-t border-yellow-100 flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-yellow-800">Confirmation Required</p>
-                            <p class="text-xs text-yellow-600">This session has not been confirmed yet.</p>
+                    <div
+                        class="px-6 py-4 bg-yellow-50/50 border-t border-yellow-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        {{-- <div class="flex-grow w-full sm:w-auto">
+                            <label class="block text-xs font-semibold text-yellow-700 uppercase tracking-wider mb-1">Select
+                                Bank Account for Payment</label>
+                            <select wire:model="selectedBankId"
+                                class="w-full px-3 py-2 border border-yellow-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm">
+                                <option value="">-- Select Bank Account --</option>
+                                @foreach($bankAccounts as $account)
+                                <option value="{{ $account->id }}">{{ $account->name }} (LKR
+                                    {{ number_format($account->balance, 2) }})</option>
+                                @endforeach
+                            </select>
+                            @error('selectedBankId')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div> --}}
+                        <div class="flex flex-col items-end shrink-0">
+                            <button wire:click="confirmSession"
+                                wire:confirm="Are you sure you want to confirm this GRN session and pay from the selected bank?"
+                                class="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg shadow-sm transition-colors text-sm font-bold flex items-center gap-2">
+                                <i class="fas fa-check"></i> Confirm & Pay
+                            </button>
+                            <p class="text-[10px] text-yellow-600 mt-1">Total: LKR
+                                {{ number_format($grn->grnItems->sum('total_price'), 2) }}
+                            </p>
                         </div>
-                        <button wire:click="confirmSession"
-                            wire:confirm="Are you sure you want to confirm this GRN session?"
-                            class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg shadow-sm transition-colors text-sm font-medium">
-                            <i class="fas fa-check mr-1"></i> Confirm Session
-                        </button>
                     </div>
                 @endif
             </div>

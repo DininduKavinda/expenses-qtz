@@ -9,7 +9,7 @@ use Livewire\WithPagination;
 class ShopIndex extends Component
 {
     use WithPagination;
-    
+
     public $search = '';
     public $showDeleteModal = false;
     public $shopIdToDelete = null;
@@ -28,17 +28,20 @@ class ShopIndex extends Component
 
     public function delete()
     {
-        Shop::find($this->shopIdToDelete)->delete();
+        $shop = Shop::findOrFail($this->shopIdToDelete);
+        $this->authorize('delete', $shop);
+        $shop->delete();
         $this->showDeleteModal = false;
         $this->dispatch('shop-deleted');
     }
 
     public function render()
     {
+        $this->authorize('viewAny', Shop::class);
         $shops = Shop::withCount('itemPrices')
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('location', 'like', '%' . $this->search . '%');
+                    ->orWhere('location', 'like', '%' . $this->search . '%');
             })
             ->orderBy('name')
             ->paginate(10);

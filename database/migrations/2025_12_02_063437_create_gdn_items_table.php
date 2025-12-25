@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('gdn_items', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('gdn_id')->constrained('gdns')->cascadeOnDelete();
-            $table->foreignId('item_id')->constrained('items')->cascadeOnDelete();
+            $table->foreignId('gdn_id')->constrained('gdns')->cascadeOnDelete();
+            $table->foreignId('grn_item_id')->constrained('grn_items')->cascadeOnDelete();
             $table->decimal('quantity', 10, 2);
-            $table->decimal('unit_price', 10, 2);
-            $table->decimal('total_price', 12, 2);
             $table->timestamps();
         });
     }

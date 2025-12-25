@@ -73,6 +73,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{bankAccount}', \App\Livewire\Bank\BankShow::class)->name('banks.show');
     });
 
+    Route::prefix('gdns')->group(function () {
+        Route::get('/', \App\Livewire\Gdn\GdnIndex::class)->name('gdns.index');
+        Route::get('/create', \App\Livewire\Gdn\GdnCreate::class)->name('gdns.create');
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::get('/', \App\Livewire\User\UserIndex::class)->name('users.index');
+    });
+
+    Route::prefix('roles')->group(function () {
+        Route::get('/', \App\Livewire\Role\RoleIndex::class)->name('roles.index');
+        Route::get('/{role}/permissions', \App\Livewire\Role\RolePermissions::class)->name('roles.permissions');
+    });
+
     Route::get('/my-expenses', \App\Livewire\Expense\MyExpenses::class)->name('my-expenses');
 });
 

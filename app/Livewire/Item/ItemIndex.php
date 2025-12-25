@@ -12,7 +12,7 @@ use Livewire\WithPagination;
 class ItemIndex extends Component
 {
     use WithPagination;
-    
+
     public $search = '';
     public $categoryFilter = '';
     public $brandFilter = '';
@@ -34,13 +34,16 @@ class ItemIndex extends Component
 
     public function delete()
     {
-        Item::find($this->itemIdToDelete)->delete();
+        $item = Item::findOrFail($this->itemIdToDelete);
+        $this->authorize('delete', $item);
+        $item->delete();
         $this->showDeleteModal = false;
         $this->dispatch('item-deleted');
     }
 
     public function render()
     {
+        $this->authorize('viewAny', Item::class);
         $items = Item::with(['category', 'brand', 'unit', 'prices'])
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');

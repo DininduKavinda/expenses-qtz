@@ -27,12 +27,15 @@ class CategoryIndex extends Component
 
     public function delete()
     {
-        Category::find($this->categoryIdToDelete)->delete();
+        $category = Category::findOrFail($this->categoryIdToDelete);
+        $this->authorize('delete', $category);
+        $category->delete();
         $this->showDeleteModal = false;
         $this->dispatch('category-deleted');
     }
     public function render()
     {
+        $this->authorize('viewAny', Category::class);
         $categories = Category::with('parent')
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');

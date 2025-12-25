@@ -22,15 +22,15 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 2. Create Roles
-        $adminRole = \App\Models\Role::create(['name' => 'Administrator', 'description' => 'Admin Access']);
-        $managerRole = \App\Models\Role::create(['name' => 'Manager', 'description' => 'Manager Access']);
-        $viewerRole = \App\Models\Role::create(['name' => 'Viewer', 'description' => 'Read Only']);
+        $adminRole = \App\Models\Role::create(['name' => 'Administrator', 'slug' => 'admin', 'description' => 'Admin Access']);
+        $managerRole = \App\Models\Role::create(['name' => 'Manager', 'slug' => 'manager', 'description' => 'Manager Access']);
+        $viewerRole = \App\Models\Role::create(['name' => 'Viewer', 'slug' => 'viewer', 'description' => 'Read Only']);
 
         // 3. Create Users linked to Quartz and Role
         $admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@quartz.com',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('1'),
             'role_id' => $adminRole->id,
             'quartz_id' => $quartz->id,
         ]);
@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         $manager = User::create([
             'name' => 'Manager User',
             'email' => 'manager@quartz.com',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('1'),
             'role_id' => $managerRole->id,
             'quartz_id' => $quartz->id,
         ]);
@@ -72,13 +72,13 @@ class DatabaseSeeder extends Seeder
         \App\Models\BankAccount::create([
             'quartz_id' => $quartz->id,
             'name' => 'Main Operations Bank',
-            'balance' => 50000.00 // Initial Float
+            'balance' => 0.00 // Initial Float
         ]);
 
         \App\Models\BankAccount::create([
             'quartz_id' => $quartz->id,
             'name' => 'Petty Cash',
-            'balance' => 5000.00
+            'balance' => 0.00
         ]);
 
         // 6. Create 10 Items for a Shop (Keells Super)
@@ -117,5 +117,8 @@ class DatabaseSeeder extends Seeder
                 'date' => now()
             ]);
         }
+
+        // 7. Seed Permissions and assign to roles
+        $this->call(PermissionSeeder::class);
     }
 }

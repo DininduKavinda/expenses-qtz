@@ -9,7 +9,7 @@ use Livewire\WithPagination;
 class BrandIndex extends Component
 {
     use WithPagination;
-    
+
     public $search = '';
     public $showDeleteModal = false;
     public $brandIdToDelete = null;
@@ -28,13 +28,16 @@ class BrandIndex extends Component
 
     public function delete()
     {
-        Brand::find($this->brandIdToDelete)->delete();
+        $brand = Brand::findOrFail($this->brandIdToDelete);
+        $this->authorize('delete', $brand);
+        $brand->delete();
         $this->showDeleteModal = false;
         $this->dispatch('brand-deleted');
     }
 
     public function render()
     {
+        $this->authorize('viewAny', Brand::class);
         $brands = Brand::with('category') // Eager load category relationship
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');

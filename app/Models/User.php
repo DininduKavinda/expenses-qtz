@@ -73,4 +73,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(ExpenseSplit::class);
     }
+
+    /**
+     * Check if the user has a specific permission via their role.
+     *
+     * @param string $permissionSlug
+     * @return bool
+     */
+    public function hasPermission(string $permissionSlug): bool
+    {
+        if (!$this->role) {
+            return false;
+        }
+
+        // Optimized check: Admin role gets all permissions by default (or we can be explicit)
+        // If we want strict RBAC, we check the pivot table.
+        return $this->role->permissions()->where('slug', $permissionSlug)->exists();
+    }
 }

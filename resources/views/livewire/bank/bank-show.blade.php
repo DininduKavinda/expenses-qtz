@@ -61,11 +61,15 @@
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                    Paid
+                                    Paid toward Expenses
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                    Remaining
+                                    Unapplied Credit
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    Pending Debt
                                 </th>
                             </tr>
                         </thead>
@@ -100,6 +104,11 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-right">
                                         <div class="text-sm font-semibold text-green-600">
                                             {{ number_format($status['paid'], 2) }}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right">
+                                        <div class="text-sm font-semibold text-indigo-600">
+                                            {{ number_format($status['unapplied_credit'], 2) }}
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right">

@@ -17,27 +17,36 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <!-- Financial Status Card -->
-            <div
-                class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-4 {{ $userBalance > 0 ? 'border-red-500' : 'border-green-500' }} p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Your Financial Status</p>
-                        <div class="mt-2 flex items-baseline">
-                            <p class="text-3xl font-bold {{ $userBalance > 0 ? 'text-red-600' : 'text-green-600' }}">
-                                {{ $userBalance > 0 ? 'You Owe' : 'You possess' }} LKR
-                                {{ number_format(abs($userBalance), 2) }}
-                            </p>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-100 mb-6">
+                <!-- Financial Status Header -->
+                <div class="px-6 py-6 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-white">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Your Financial Status</h2>
+                            <p class="text-sm text-gray-500 mt-1">Review your total expenses and available credits</p>
                         </div>
-                        @if($userBalance > 0)
-                            <p class="text-sm text-red-500 mt-1">Please make a payment to clear your dues.</p>
-                        @else
-                            <p class="text-sm text-green-500 mt-1">You are in good standing!</p>
-                        @endif
-                    </div>
-                    <div
-                        class="p-3 rounded-full {{ $userBalance > 0 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600' }}">
-                        <i
-                            class="fas {{ $userBalance > 0 ? 'fa-exclamation-circle' : 'fa-check-circle' }} text-2xl"></i>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <!-- Gross Debt -->
+                            <div class="bg-red-50 px-6 py-4 rounded-xl border border-red-100 min-w-[180px]">
+                                <p class="text-[10px] font-bold text-red-600 uppercase tracking-widest mb-1">Total
+                                    Pending Debt</p>
+                                <div class="flex items-baseline gap-1">
+                                    <span
+                                        class="text-2xl font-black text-red-700">{{ number_format($userDebt, 2) }}</span>
+                                    <span class="text-xs font-bold text-red-500 uppercase">LKR</span>
+                                </div>
+                            </div>
+                            <!-- Available Credit -->
+                            <div class="bg-green-50 px-6 py-4 rounded-xl border border-green-100 min-w-[180px]">
+                                <p class="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-1">Available
+                                    Credit</p>
+                                <div class="flex items-baseline gap-1">
+                                    <span
+                                        class="text-2xl font-black text-green-700">{{ number_format($userCredit, 2) }}</span>
+                                    <span class="text-xs font-bold text-green-500 uppercase">LKR</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -51,6 +60,9 @@
                                 <div class="flex flex-col h-full">
                                     <h3 class="text-lg font-bold text-gray-900 truncate">{{ $account->name }}</h3>
                                     <div class="mt-4 flex-grow">
+                                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1">
+                                            Remaining
+                                            Balance</p>
                                         <p class="text-3xl font-bold text-gray-800">
                                             {{ number_format($account->balance, 2) }}
                                             <span class="text-sm font-normal text-gray-500">LKR</span>

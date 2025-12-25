@@ -12,6 +12,7 @@ class GrnSession extends Model
         'shop_id',
         'session_date',
         'status',
+        'bank_account_id',
         'confirmed_by',
         'confirmed_at'
     ];
@@ -45,6 +46,7 @@ class GrnSession extends Model
         // If we call this immediately after setting status, the status check prevents it.
         // Let's modify to: if expense splits exist, return.
 
+
         if (\App\Models\ExpenseSplit::whereHas('grnItem', function ($q) {
             $q->where('grn_session_id', $this->id);
         })->exists()) {
@@ -59,6 +61,7 @@ class GrnSession extends Model
                     'confirmed_by' => $confirmingUserId,
                     'confirmed_at' => now(),
                 ]);
+                $totalCost = $this->grnItems()->sum('total_price');
             }
 
             // Splitting Logic
@@ -120,5 +123,10 @@ class GrnSession extends Model
     public function quartz()
     {
         return $this->belongsTo(Quartz::class);
+    }
+
+    public function bankAccount()
+    {
+        return $this->belongsTo(BankAccount::class);
     }
 }
