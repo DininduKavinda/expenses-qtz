@@ -36,7 +36,9 @@ class CategoryCreate extends Component
         return $this->redirect(route('categories.index'),  true);
     }
 
-    public function mount(){
+    public function mount()
+    {
+        $this->authorize('create', Category::class);
         $this->parentCategories = Category::whereNull('parent_id')->get();
     }
 

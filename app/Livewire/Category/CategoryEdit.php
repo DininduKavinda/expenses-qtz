@@ -19,10 +19,10 @@ class CategoryEdit extends Component
     {
         $this->category_id = $id;
         $this->category = Category::findOrFail($id);
-        
+        $this->authorize('update', $this->category);
+
         $this->name = $this->category->name;
         $this->parent_id = $this->category->parent_id;
-       
     }
 
     // Rest of your methods remain the same...
@@ -32,15 +32,15 @@ class CategoryEdit extends Component
             'name' => 'required|min:2|max:100',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
-        
+
         $this->processing = true;
-        
+
         $this->category->update([
             'name' => $this->name,
             'parent_id' => $this->parent_id,
-         
+
         ]);
-        
+
         $this->processing = false;
         $this->redirect(route('categories.index'), true);
     }
@@ -48,11 +48,11 @@ class CategoryEdit extends Component
     public function render()
     {
         $parentCategories = Category::where('id', '!=', $this->category_id)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereNull('parent_id');
             })
             ->get();
-            
+
         return view('livewire.category.category-edit', compact('parentCategories'));
     }
 }

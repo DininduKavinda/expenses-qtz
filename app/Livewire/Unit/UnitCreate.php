@@ -7,6 +7,11 @@ use Livewire\Component;
 
 class UnitCreate extends Component
 {
+    public function mount()
+    {
+        $this->authorize('create', Unit::class);
+    }
+
     public $name = '';
     public $description = '';
     public $processing = false;
@@ -19,14 +24,14 @@ class UnitCreate extends Component
     public function save()
     {
         $this->validate();
-        
+
         $this->processing = true;
-        
+
         Unit::create([
             'name' => $this->name,
             'description' => $this->description,
         ]);
-        
+
         $this->processing = false;
         $this->dispatch('unit-created');
         $this->redirect(route('units.index'), navigate: true);

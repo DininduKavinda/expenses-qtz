@@ -7,6 +7,11 @@ use Livewire\Component;
 
 class QuartzCreate extends Component
 {
+    public function mount()
+    {
+        $this->authorize('create', Quartz::class);
+    }
+
     public $name = '';
     public $description = '';
     public $processing = false;

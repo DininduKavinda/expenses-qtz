@@ -5,10 +5,12 @@
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     {{ __('User Management') }}
                 </h2>
+                @can('create-users')
                 <button wire:click="openCreateModal"
                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition duration-150 ease-in-out">
                     Add User
                 </button>
+                @endcan
             </div>
         </div>
     </div>
@@ -49,14 +51,23 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
+                                            @can('update-users')
                                             <button wire:click="toggleActive({{ $user->id }})" 
                                                 @if($user->id === auth()->id()) disabled @endif
                                                 class="px-2 inline-flex text-xs leading-5 font-bold rounded-full transition duration-150 {{ $user->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} {{ $user->id === auth()->id() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-sm' }}">
                                                 {{ $user->active ? 'ACTIVE' : 'INACTIVE' }}
                                             </button>
+                                            @else
+                                            <span 
+                                                class="px-2 inline-flex text-xs leading-5 font-bold rounded-full {{ $user->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                {{ $user->active ? 'ACTIVE' : 'INACTIVE' }}
+                                            </span>
+                                            @endcan
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            @can('update-users')
                                             <button wire:click="editUser({{ $user->id }})" class="text-blue-600 hover:text-blue-900 font-bold">Edit</button>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

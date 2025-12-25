@@ -47,6 +47,7 @@ class ItemEdit extends Component
     {
         $this->item_id = $id;
         $this->item = Item::with(['prices.shop', 'prices.unit'])->findOrFail($id);
+        $this->authorize('update', $this->item);
 
         $this->name = $this->item->name;
         $this->category_id = $this->item->category_id;
@@ -159,6 +160,7 @@ class ItemEdit extends Component
 
     public function delete()
     {
+        $this->authorize('delete', $this->item);
         $this->item->delete();
         $this->showDeleteModal = false;
         $this->dispatch('item-deleted');

@@ -15,6 +15,7 @@ class GdnCreate extends Component
 
     public function mount()
     {
+        $this->authorize('create', Gdn::class);
         $this->gdn_date = now()->format('Y-m-d');
     }
 

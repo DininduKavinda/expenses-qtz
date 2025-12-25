@@ -26,6 +26,7 @@ class GrnEdit extends Component
 
     public function mount(\App\Models\GrnSession $grn)
     {
+        $this->authorize('update', $grn);
         $this->grn = $grn->load(['grnItems', 'images', 'participants']);
         $this->quartz_id = $grn->quartz_id;
         $this->shop_id = $grn->shop_id;

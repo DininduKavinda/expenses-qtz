@@ -23,7 +23,8 @@ class UnitEdit extends Component
     {
         $this->unit_id = $id;
         $this->unit = Unit::findOrFail($id);
-        
+        $this->authorize('update', $this->unit);
+
         $this->name = $this->unit->name;
         $this->description = $this->unit->description;
     }
@@ -31,14 +32,14 @@ class UnitEdit extends Component
     public function update()
     {
         $this->validate();
-        
+
         $this->processing = true;
-        
+
         $this->unit->update([
             'name' => $this->name,
             'description' => $this->description,
         ]);
-        
+
         $this->processing = false;
         $this->dispatch('unit-updated');
         $this->redirect(route('units.index'), navigate: true);
@@ -51,6 +52,7 @@ class UnitEdit extends Component
 
     public function delete()
     {
+        $this->authorize('delete', $this->unit);
         $this->unit->delete();
         $this->showDeleteModal = false;
         $this->dispatch('unit-deleted');

@@ -5,10 +5,12 @@
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     {{ __('Goods Despatch Notes') }}
                 </h2>
-                <a href="{{ route('gdns.create') }}" wire:navigate
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition duration-150 ease-in-out">
-                    Create GDN
-                </a>
+                @can('create-gdns')
+                    <a href="{{ route('gdns.create') }}" wire:navigate
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition duration-150 ease-in-out">
+                        Create GDN
+                    </a>
+                @endcan
             </div>
         </div>
     </div>

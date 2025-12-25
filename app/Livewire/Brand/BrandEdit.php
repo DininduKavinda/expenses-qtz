@@ -24,7 +24,8 @@ class BrandEdit extends Component
     {
         $this->brand_id = $id;
         $this->brand = Brand::findOrFail($id);
-        
+        $this->authorize('update', $this->brand);
+
         $this->name = $this->brand->name;
         $this->category_id = $this->brand->category_id;
     }
@@ -32,14 +33,14 @@ class BrandEdit extends Component
     public function update()
     {
         $this->validate();
-        
+
         $this->processing = true;
-        
+
         $this->brand->update([
             'name' => $this->name,
             'category_id' => $this->category_id,
         ]);
-        
+
         $this->processing = false;
         $this->dispatch('brand-updated');
         $this->redirect(route('brands.index'));
@@ -64,7 +65,7 @@ class BrandEdit extends Component
             ->orderBy('parent_id')
             ->orderBy('name')
             ->get();
-            
+
         return view('livewire.brand.brand-edit', compact('categories'));
     }
 }

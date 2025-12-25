@@ -23,6 +23,7 @@ class GrnCreate extends Component
 
     public function mount()
     {
+        $this->authorize('create', \App\Models\GrnSession::class);
         $this->session_date = now()->format('Y-m-d\TH:i');
         $this->allQuartzs = \App\Models\Quartz::all();
         $this->allShops = \App\Models\Shop::all();

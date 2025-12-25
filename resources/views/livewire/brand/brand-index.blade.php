@@ -9,25 +9,25 @@
         <div class="w-full md:w-auto flex flex-col sm:flex-row gap-3">
             <div class="relative flex-1 sm:flex-none">
                 <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
-                <input type="text" 
-                       wire:model.live="search" 
-                       placeholder="Search brands..."
-                       class="w-full pl-10 pr-4 py-2.5 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-sm">
+                <input type="text" wire:model.live="search" placeholder="Search brands..."
+                    class="w-full pl-10 pr-4 py-2.5 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-sm">
             </div>
 
-            <a href="{{ route('brands.create') }}" 
-               wire:navigate
-               class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center space-x-2 text-sm">
-                <i class="fas fa-plus text-xs"></i>
-                <span>Add Brand</span>
-            </a>
+            @can('create-brands')
+                <a href="{{ route('brands.create') }}" wire:navigate
+                    class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center space-x-2 text-sm">
+                    <i class="fas fa-plus text-xs"></i>
+                    <span>Add Brand</span>
+                </a>
+            @endcan
         </div>
     </div>
 
     <!-- Main Content Card -->
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <!-- Mobile/Table Header -->
-        <div class="px-4 py-3 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div
+            class="px-4 py-3 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
                 <h2 class="font-semibold text-gray-800">Brand List</h2>
                 <p class="text-xs text-gray-600 mt-0.5">{{ $brands->count() }} brands found</p>
@@ -42,20 +42,22 @@
                         <div class="p-4 hover:bg-gray-50 transition-colors">
                             <div class="flex items-start justify-between">
                                 <div class="flex items-start space-x-3">
-                                    <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-sm flex-shrink-0">
+                                    <div
+                                        class="h-10 w-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-sm flex-shrink-0">
                                         <i class="fas fa-copyright text-white text-xs"></i>
                                     </div>
                                     <div>
                                         <h3 class="font-medium text-gray-800">{{ $brand->name }}</h3>
                                         <p class="text-xs text-gray-500 mt-1">ID: #{{ $brand->id }}</p>
-                                      
+
                                     </div>
-                                      @if($brand->category)
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-700 mt-1">
-                                                <i class="fas fa-tag mr-1 text-xs"></i>
-                                                {{ $brand->category->name }}
-                                            </span>
-                                        @endif
+                                    @if($brand->category)
+                                        <span
+                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-700 mt-1">
+                                            <i class="fas fa-tag mr-1 text-xs"></i>
+                                            {{ $brand->category->name }}
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
 
@@ -64,32 +66,35 @@
                             @endif
 
                             <div class="flex items-center space-x-2 mt-4">
-                                <a href="{{ route('brands.edit', $brand->id) }}" 
-                                   wire:navigate
-                                   class="flex-1 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-blue-500/20 hover:to-cyan-500/20 transition-all flex items-center justify-center space-x-2">
-                                    <i class="fas fa-edit text-xs"></i>
-                                    <span>Edit</span>
-                                </a>
+                                @can('update-brands')
+                                    <a href="{{ route('brands.edit', $brand->id) }}" wire:navigate
+                                        class="flex-1 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-blue-500/20 hover:to-cyan-500/20 transition-all flex items-center justify-center space-x-2">
+                                        <i class="fas fa-edit text-xs"></i>
+                                        <span>Edit</span>
+                                    </a>
+                                @endcan
 
-                                <button wire:click="confirmDelete({{ $brand->id }})"
+                                @can('delete-brands')
+                                    <button wire:click="confirmDelete({{ $brand->id }})"
                                         class="flex-1 bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-red-500/20 hover:to-pink-500/20 transition-all flex items-center justify-center space-x-2">
-                                    <i class="fas fa-trash text-xs"></i>
-                                    <span>Delete</span>
-                                </button>
+                                        <i class="fas fa-trash text-xs"></i>
+                                        <span>Delete</span>
+                                    </button>
+                                @endcan
                             </div>
                         </div>
                     @endforeach
                 </div>
             @else
                 <div class="py-12 px-4 text-center">
-                    <div class="h-16 w-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mx-auto mb-4">
+                    <div
+                        class="h-16 w-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-copyright text-gray-400 text-xl"></i>
                     </div>
                     <h3 class="text-base font-medium text-gray-700 mb-2">No brands found</h3>
                     <p class="text-gray-500 mb-6 text-sm">Get started by creating your first brand</p>
-                    <a href="{{ route('brands.create') }}" 
-                       wire:navigate
-                       class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 inline-flex items-center space-x-2 text-sm">
+                    <a href="{{ route('brands.create') }}" wire:navigate
+                        class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 inline-flex items-center space-x-2 text-sm">
                         <i class="fas fa-plus text-xs"></i>
                         <span>Add Your First Brand</span>
                     </a>
@@ -126,7 +131,8 @@
                                 <i class="fas fa-sort text-gray-400 text-xs"></i>
                             </div>
                         </th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700 text-sm border-b border-gray-200">Actions</th>
+                        <th class="text-left py-3 px-4 font-semibold text-gray-700 text-sm border-b border-gray-200">
+                            Actions</th>
                     </tr>
                 </thead>
 
@@ -135,16 +141,18 @@
                         <tr class="hover:bg-gray-50/80 transition-colors border-b border-gray-100 last:border-b-0">
                             <td class="py-3 px-4">
                                 <div class="flex items-center">
-                                    <div class="h-7 w-7 rounded-md bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center mr-2">
+                                    <div
+                                        class="h-7 w-7 rounded-md bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center mr-2">
                                         <span class="text-xs font-medium text-orange-700">{{ $brand->id }}</span>
                                     </div>
                                     <span class="font-medium text-gray-700 text-sm">#{{ $brand->id }}</span>
                                 </div>
                             </td>
-                            
+
                             <td class="py-3 px-4">
                                 <div class="flex items-center">
-                                    <div class="h-9 w-9 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mr-3 shadow-sm flex-shrink-0">
+                                    <div
+                                        class="h-9 w-9 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mr-3 shadow-sm flex-shrink-0">
                                         <i class="fas fa-copyright text-white text-xs"></i>
                                     </div>
                                     <div>
@@ -152,11 +160,12 @@
                                     </div>
                                 </div>
                             </td>
-                            
+
                             <td class="py-3 px-4">
                                 @if($brand->category)
                                     <div class="flex items-center">
-                                        <div class="h-9 w-9 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mr-3 shadow-sm flex-shrink-0">
+                                        <div
+                                            class="h-9 w-9 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mr-3 shadow-sm flex-shrink-0">
                                             <i class="fas fa-tag text-white text-xs"></i>
                                         </div>
                                         <div>
@@ -167,7 +176,7 @@
                                     <span class="text-gray-400 text-sm">— No category —</span>
                                 @endif
                             </td>
-                            
+
                             <td class="py-3 px-4">
                                 @if($brand->description)
                                     <p class="text-gray-600 text-sm line-clamp-2">{{ $brand->description }}</p>
@@ -178,18 +187,21 @@
 
                             <td class="py-3 px-4">
                                 <div class="flex items-center space-x-2">
-                                    <a href="{{ route('brands.edit', $brand->id) }}" 
-                                       wire:navigate
-                                       class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-1.5 rounded-lg font-medium hover:from-blue-500/20 hover:to-cyan-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
-                                        <i class="fas fa-edit text-xs"></i>
-                                        <span>Edit</span>
-                                    </a>
+                                    @can('update-brands')
+                                        <a href="{{ route('brands.edit', $brand->id) }}" wire:navigate
+                                            class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-1.5 rounded-lg font-medium hover:from-blue-500/20 hover:to-cyan-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
+                                            <i class="fas fa-edit text-xs"></i>
+                                            <span>Edit</span>
+                                        </a>
+                                    @endcan
 
-                                    <button wire:click="confirmDelete({{ $brand->id }})"
+                                    @can('delete-brands')
+                                        <button wire:click="confirmDelete({{ $brand->id }})"
                                             class="bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-1.5 rounded-lg font-medium hover:from-red-500/20 hover:to-pink-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
-                                        <i class="fas fa-trash text-xs"></i>
-                                        <span>Delete</span>
-                                    </button>
+                                            <i class="fas fa-trash text-xs"></i>
+                                            <span>Delete</span>
+                                        </button>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
@@ -199,14 +211,14 @@
                         <tr>
                             <td colspan="5" class="py-12 px-6 text-center">
                                 <div class="max-w-md mx-auto">
-                                    <div class="h-16 w-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mx-auto mb-4">
+                                    <div
+                                        class="h-16 w-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mx-auto mb-4">
                                         <i class="fas fa-copyright text-gray-400 text-xl"></i>
                                     </div>
                                     <h3 class="text-base font-medium text-gray-700 mb-2">No brands found</h3>
                                     <p class="text-gray-500 mb-6 text-sm">Get started by creating your first brand</p>
-                                    <a href="{{ route('brands.create') }}" 
-                                       wire:navigate
-                                       class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 inline-flex items-center space-x-2 text-sm">
+                                    <a href="{{ route('brands.create') }}" wire:navigate
+                                        class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 inline-flex items-center space-x-2 text-sm">
                                         <i class="fas fa-plus text-xs"></i>
                                         <span>Add Your First Brand</span>
                                     </a>
@@ -231,7 +243,8 @@
                     <div class="flex items-center space-x-1 order-1 sm:order-2">
                         {{-- Previous Page Link --}}
                         @if ($brands->onFirstPage())
-                            <span class="h-8 w-8 rounded-md border border-gray-300 flex items-center justify-center text-gray-400 cursor-not-allowed">
+                            <span
+                                class="h-8 w-8 rounded-md border border-gray-300 flex items-center justify-center text-gray-400 cursor-not-allowed">
                                 <i class="fas fa-chevron-left text-xs"></i>
                             </span>
                         @else
@@ -263,7 +276,8 @@
                                 <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
                             </button>
                         @else
-                            <span class="h-8 w-8 rounded-md border border-gray-300 flex items-center justify-center text-gray-400 cursor-not-allowed">
+                            <span
+                                class="h-8 w-8 rounded-md border border-gray-300 flex items-center justify-center text-gray-400 cursor-not-allowed">
                                 <i class="fas fa-chevron-right text-xs"></i>
                             </span>
                         @endif
@@ -275,12 +289,14 @@
 
     <!-- Delete Confirmation Modal -->
     @if ($showDeleteModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
+        <div
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all">
                 <!-- Modal Header -->
                 <div class="p-6 border-b border-gray-200">
                     <div class="flex items-center space-x-3">
-                        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-red-500/10 to-pink-500/10 flex items-center justify-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-gradient-to-br from-red-500/10 to-pink-500/10 flex items-center justify-center">
                             <i class="fas fa-exclamation-triangle text-red-500 text-lg"></i>
                         </div>
                         <div>

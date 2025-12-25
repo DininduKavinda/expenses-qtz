@@ -23,7 +23,8 @@ class ShopEdit extends Component
     {
         $this->shop_id = $id;
         $this->shop = Shop::findOrFail($id);
-        
+        $this->authorize('update', $this->shop);
+
         $this->name = $this->shop->name;
         $this->location = $this->shop->location;
     }
@@ -31,14 +32,14 @@ class ShopEdit extends Component
     public function update()
     {
         $this->validate();
-        
+
         $this->processing = true;
-        
+
         $this->shop->update([
             'name' => $this->name,
             'location' => $this->location,
         ]);
-        
+
         $this->processing = false;
         $this->dispatch('shop-updated');
         $this->redirect(route('shops.index'), navigate: true);
@@ -51,6 +52,7 @@ class ShopEdit extends Component
 
     public function delete()
     {
+        $this->authorize('delete', $this->shop);
         $this->shop->delete();
         $this->showDeleteModal = false;
         $this->dispatch('shop-deleted');

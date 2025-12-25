@@ -30,6 +30,7 @@ class QuartzEdit extends Component
     public function mount(Quartz $quartz)
     {
         $this->quartz = $quartz;
+        $this->authorize('update', $this->quartz);
         $this->name = $quartz->name;
         $this->description = $quartz->description;
     }
@@ -51,7 +52,6 @@ class QuartzEdit extends Component
             ]);
 
             $this->processing = false;
-
         } catch (\Exception $e) {
             $this->processing = false;
             $this->dispatch('notify', [

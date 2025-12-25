@@ -5,10 +5,12 @@
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     {{ __('Bank Accounts') }}
                 </h2>
-                <button wire:click="$set('showCreateModal', true)"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition duration-150 ease-in-out">
-                    Create Account
-                </button>
+                @can('create-banks')
+                    <button wire:click="$set('showCreateModal', true)"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition duration-150 ease-in-out">
+                        Create Account
+                    </button>
+                @endcan
             </div>
         </div>
     </div>
@@ -54,9 +56,29 @@
             @if($accounts->isNotEmpty())
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($accounts as $account)
-                        <a href="{{ route('banks.show', $account) }}" class="block">
-                            <div
-                                class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:shadow-md transition duration-150 ease-in-out h-full border border-gray-100">
+                        @can('view-banks')
+                            <a href="{{ route('banks.show', $account) }}" class="block">
+                                <div
+                                    class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:shadow-md transition duration-150 ease-in-out h-full border border-gray-100">
+                                    <div class="flex flex-col h-full">
+                                        <h3 class="text-lg font-bold text-gray-900 truncate">{{ $account->name }}</h3>
+                                        <div class="mt-4 flex-grow">
+                                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1">
+                                                Remaining
+                                                Balance</p>
+                                            <p class="text-3xl font-bold text-gray-800">
+                                                {{ number_format($account->balance, 2) }}
+                                                <span class="text-sm font-normal text-gray-500">LKR</span>
+                                            </p>
+                                        </div>
+                                        <div class="mt-6 pt-4 border-t border-gray-100">
+                                            <p class="text-xs text-gray-500">Click to manage</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        @else
+                            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 h-full border border-gray-100">
                                 <div class="flex flex-col h-full">
                                     <h3 class="text-lg font-bold text-gray-900 truncate">{{ $account->name }}</h3>
                                     <div class="mt-4 flex-grow">
@@ -68,12 +90,9 @@
                                             <span class="text-sm font-normal text-gray-500">LKR</span>
                                         </p>
                                     </div>
-                                    <div class="mt-6 pt-4 border-t border-gray-100">
-                                        <p class="text-xs text-gray-500">Click to manage</p>
-                                    </div>
                                 </div>
                             </div>
-                        </a>
+                        @endcan
                     @endforeach
                 </div>
             @else
@@ -85,16 +104,18 @@
                         </svg>
                         <h3 class="mt-4 text-lg font-medium text-gray-900">No bank accounts</h3>
                         <p class="mt-2 text-sm text-gray-500">Get started by creating your first bank account.</p>
-                        <div class="mt-6">
-                            <button wire:click="$set('showCreateModal', true)"
-                                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition duration-150 ease-in-out">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                                Create Account
-                            </button>
-                        </div>
+                        @can('create-banks')
+                            <div class="mt-6">
+                                <button wire:click="$set('showCreateModal', true)"
+                                    class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition duration-150 ease-in-out">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Create Account
+                                </button>
+                            </div>
+                        @endcan
                     </div>
                 </div>
             @endif

@@ -4,11 +4,13 @@
             <h1 class="text-2xl font-bold text-gray-800">GRN Sessions</h1>
             <p class="text-sm text-gray-500">Manage Goods Received Notes</p>
         </div>
-        <a href="{{ route('grns.create') }}" wire:navigate
-            class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow-md hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center gap-2">
-            <i class="fas fa-plus"></i>
-            <span>New Session</span>
-        </a>
+        @can('create-grns')
+            <a href="{{ route('grns.create') }}" wire:navigate
+                class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow-md hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center gap-2">
+                <i class="fas fa-plus"></i>
+                <span>New Session</span>
+            </a>
+        @endcan
     </div>
 
     @if (session()->has('message'))
@@ -81,18 +83,26 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                <a href="{{ route('grns.show', $grn) }}" wire:navigate
-                                    class="text-gray-400 hover:text-blue-600 transition-colors" title="View">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('grns.edit', $grn) }}" wire:navigate
-                                    class="text-gray-400 hover:text-orange-500 transition-colors" title="Edit">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                <button wire:click="delete({{ $grn->id }})" wire:confirm="Are you sure?"
-                                    class="text-gray-400 hover:text-red-500 transition-colors" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                @can('view-grns')
+                                    <a href="{{ route('grns.show', $grn) }}" wire:navigate
+                                        class="text-gray-400 hover:text-blue-600 transition-colors" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                @endcan
+
+                                @can('update-grns')
+                                    <a href="{{ route('grns.edit', $grn) }}" wire:navigate
+                                        class="text-gray-400 hover:text-orange-500 transition-colors" title="Edit">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                @endcan
+
+                                @can('delete-grns')
+                                    <button wire:click="delete({{ $grn->id }})" wire:confirm="Are you sure?"
+                                        class="text-gray-400 hover:text-red-500 transition-colors" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                @endcan
                             </td>
                         </tr>
                     @empty

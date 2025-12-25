@@ -17,17 +17,22 @@ class BrandCreate extends Component
         'category_id' => 'required|exists:categories,id',
     ];
 
+    public function mount()
+    {
+        $this->authorize('create', Brand::class);
+    }
+
     public function save()
     {
         $this->validate();
-        
+
         $this->processing = true;
-        
+
         Brand::create([
             'name' => $this->name,
             'category_id' => $this->category_id,
         ]);
-        
+
         $this->processing = false;
         $this->dispatch('brand-created');
         $this->redirect(route('brands.index'));
@@ -40,7 +45,7 @@ class BrandCreate extends Component
             ->orderBy('parent_id')
             ->orderBy('name')
             ->get();
-            
+
         return view('livewire.brand.brand-create', compact('categories'));
     }
 }

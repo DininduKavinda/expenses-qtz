@@ -11,6 +11,11 @@ use Livewire\Component;
 
 class ItemCreate extends Component
 {
+    public function mount()
+    {
+        $this->authorize('create', Item::class);
+    }
+
     public $name = '';
     public $category_id = '';
     public $brand_id = '';
@@ -45,9 +50,9 @@ class ItemCreate extends Component
     public function addPrice()
     {
         $this->prices[] = [
-            'shop_id' => '', 
+            'shop_id' => '',
             'unit_id' => $this->unit_id, // Default to item's unit
-            'price' => '', 
+            'price' => '',
             'date' => date('Y-m-d')
         ];
     }
@@ -93,7 +98,7 @@ class ItemCreate extends Component
         }
 
         $this->processing = false;
-        
+
         session()->flash('message', 'Item created successfully!');
         $this->dispatch('item-created');
         $this->redirect(route('items.index'), navigate: true);

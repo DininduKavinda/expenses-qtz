@@ -13,11 +13,13 @@
                     class="w-full pl-10 pr-4 py-2.5 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-sm">
             </div>
 
-            <a href="{{ route('categories.create') }}" wire:navigate
-                class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center space-x-2 text-sm">
-                <i class="fas fa-plus text-xs"></i>
-                <span>Add Category</span>
-            </a>
+            @can('create-categories')
+                <a href="{{ route('categories.create') }}" wire:navigate
+                    class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center space-x-2 text-sm">
+                    <i class="fas fa-plus text-xs"></i>
+                    <span>Add Category</span>
+                </a>
+            @endcan
         </div>
     </div>
 
@@ -47,29 +49,34 @@
                                     <div>
                                         <h3 class="font-medium text-gray-800">{{ $cat->name }}</h3>
                                         <p class="text-xs text-gray-500 mt-1">ID: #{{ $cat->id }}</p>
-                                        
+
                                     </div>
                                     @if($cat->parent_id)
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-700 mt-1">
-                                                <i class="fas fa-tag mr-1 text-xs"></i>
-                                                {{ $cat->parent->name }}
-                                            </span>
-                                        @endif
+                                        <span
+                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-700 mt-1">
+                                            <i class="fas fa-tag mr-1 text-xs"></i>
+                                            {{ $cat->parent->name }}
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
 
                             <div class="flex items-center space-x-2 mt-4">
-                                <a href="{{ route('categories.edit', $cat->id) }}" wire:navigate
-                                    class="flex-1 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-blue-500/20 hover:to-cyan-500/20 transition-all flex items-center justify-center space-x-2">
-                                    <i class="fas fa-edit text-xs"></i>
-                                    <span>Edit</span>
-                                </a>
+                                @can('update-categories')
+                                    <a href="{{ route('categories.edit', $cat->id) }}" wire:navigate
+                                        class="flex-1 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-blue-500/20 hover:to-cyan-500/20 transition-all flex items-center justify-center space-x-2">
+                                        <i class="fas fa-edit text-xs"></i>
+                                        <span>Edit</span>
+                                    </a>
+                                @endcan
 
-                                <button wire:click="confirmDelete({{ $cat->id }})"
-                                    class="flex-1 bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-red-500/20 hover:to-pink-500/20 transition-all flex items-center justify-center space-x-2">
-                                    <i class="fas fa-trash text-xs"></i>
-                                    <span>Delete</span>
-                                </button>
+                                @can('delete-categories')
+                                    <button wire:click="confirmDelete({{ $cat->id }})"
+                                        class="flex-1 bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-red-500/20 hover:to-pink-500/20 transition-all flex items-center justify-center space-x-2">
+                                        <i class="fas fa-trash text-xs"></i>
+                                        <span>Delete</span>
+                                    </button>
+                                @endcan
                             </div>
                         </div>
                     @endforeach
@@ -157,17 +164,21 @@
 
                             <td class="py-3 px-4">
                                 <div class="flex items-center space-x-2">
-                                    <a href="{{ route('categories.edit', $cat->id) }}" wire:navigate
-                                        class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-1.5 rounded-lg font-medium hover:from-blue-500/20 hover:to-cyan-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
-                                        <i class="fas fa-edit text-xs"></i>
-                                        <span>Edit</span>
-                                    </a>
+                                    @can('update-categories')
+                                        <a href="{{ route('categories.edit', $cat->id) }}" wire:navigate
+                                            class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-1.5 rounded-lg font-medium hover:from-blue-500/20 hover:to-cyan-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
+                                            <i class="fas fa-edit text-xs"></i>
+                                            <span>Edit</span>
+                                        </a>
+                                    @endcan
 
-                                    <button wire:click="confirmDelete({{ $cat->id }})"
-                                        class="bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-1.5 rounded-lg font-medium hover:from-red-500/20 hover:to-pink-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
-                                        <i class="fas fa-trash text-xs"></i>
-                                        <span>Delete</span>
-                                    </button>
+                                    @can('delete-categories')
+                                        <button wire:click="confirmDelete({{ $cat->id }})"
+                                            class="bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-1.5 rounded-lg font-medium hover:from-red-500/20 hover:to-pink-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
+                                            <i class="fas fa-trash text-xs"></i>
+                                            <span>Delete</span>
+                                        </button>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
@@ -210,7 +221,8 @@
                     <div class="flex items-center space-x-1 order-1 sm:order-2">
                         {{-- Previous Page Link --}}
                         @if ($categories->onFirstPage())
-                            <span class="h-8 w-8 rounded-md border border-gray-300 flex items-center justify-center text-gray-400 cursor-not-allowed">
+                            <span
+                                class="h-8 w-8 rounded-md border border-gray-300 flex items-center justify-center text-gray-400 cursor-not-allowed">
                                 <i class="fas fa-chevron-left text-xs"></i>
                             </span>
                         @else
@@ -242,7 +254,8 @@
                                 <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
                             </button>
                         @else
-                            <span class="h-8 w-8 rounded-md border border-gray-300 flex items-center justify-center text-gray-400 cursor-not-allowed">
+                            <span
+                                class="h-8 w-8 rounded-md border border-gray-300 flex items-center justify-center text-gray-400 cursor-not-allowed">
                                 <i class="fas fa-chevron-right text-xs"></i>
                             </span>
                         @endif

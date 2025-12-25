@@ -14,11 +14,13 @@
                     class="w-full pl-10 pr-4 py-2.5 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 text-sm">
             </div>
 
-            <a href="{{ route('items.create') }}" wire:navigate
-                class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center space-x-2 text-sm">
-                <i class="fas fa-plus text-xs"></i>
-                <span>Add Item</span>
-            </a>
+            @can('create-items')
+                <a href="{{ route('items.create') }}" wire:navigate
+                    class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center space-x-2 text-sm">
+                    <i class="fas fa-plus text-xs"></i>
+                    <span>Add Item</span>
+                </a>
+            @endcan
         </div>
     </div>
 
@@ -148,23 +150,29 @@
                             @endif
 
                             <div class="flex items-center space-x-2 mt-4">
-                                <!-- Add this to action buttons section -->
-                                <a href="{{ route('items.show', $item->id) }}" wire:navigate
-                                    class="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 px-3 py-1.5 rounded-lg font-medium hover:from-emerald-500/20 hover:to-teal-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
-                                    <i class="fas fa-eye text-xs"></i>
-                                    <span>View</span>
-                                </a>
-                                <a href="{{ route('items.edit', $item->id) }}" wire:navigate
-                                    class="flex-1 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-blue-500/20 hover:to-cyan-500/20 transition-all flex items-center justify-center space-x-2">
-                                    <i class="fas fa-edit text-xs"></i>
-                                    <span>Edit</span>
-                                </a>
+                                @can('view-items')
+                                    <a href="{{ route('items.show', $item->id) }}" wire:navigate
+                                        class="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 px-3 py-1.5 rounded-lg font-medium hover:from-emerald-500/20 hover:to-teal-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
+                                        <i class="fas fa-eye text-xs"></i>
+                                        <span>View</span>
+                                    </a>
+                                @endcan
 
-                                <button wire:click="confirmDelete({{ $item->id }})"
-                                    class="flex-1 bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-red-500/20 hover:to-pink-500/20 transition-all flex items-center justify-center space-x-2">
-                                    <i class="fas fa-trash text-xs"></i>
-                                    <span>Delete</span>
-                                </button>
+                                @can('update-items')
+                                    <a href="{{ route('items.edit', $item->id) }}" wire:navigate
+                                        class="flex-1 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-blue-500/20 hover:to-cyan-500/20 transition-all flex items-center justify-center space-x-2">
+                                        <i class="fas fa-edit text-xs"></i>
+                                        <span>Edit</span>
+                                    </a>
+                                @endcan
+
+                                @can('delete-items')
+                                    <button wire:click="confirmDelete({{ $item->id }})"
+                                        class="flex-1 bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-2 rounded-lg font-medium text-sm hover:from-red-500/20 hover:to-pink-500/20 transition-all flex items-center justify-center space-x-2">
+                                        <i class="fas fa-trash text-xs"></i>
+                                        <span>Delete</span>
+                                    </button>
+                                @endcan
                             </div>
                         </div>
                     @endforeach
@@ -328,22 +336,29 @@
 
                             <td class="py-3 px-4">
                                 <div class="flex items-center space-x-2">
-                                    <a href="{{ route('items.show', $item->id) }}" wire:navigate
-                                        class="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 px-3 py-1.5 rounded-lg font-medium hover:from-emerald-500/20 hover:to-teal-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
-                                        <i class="fas fa-eye text-xs"></i>
-                                        <span>View</span>
-                                    </a>
-                                    <a href="{{ route('items.edit', $item->id) }}" wire:navigate
-                                        class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-1.5 rounded-lg font-medium hover:from-blue-500/20 hover:to-cyan-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
-                                        <i class="fas fa-edit text-xs"></i>
-                                        <span>Edit</span>
-                                    </a>
+                                    @can('view-items')
+                                        <a href="{{ route('items.show', $item->id) }}" wire:navigate
+                                            class="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 px-3 py-1.5 rounded-lg font-medium hover:from-emerald-500/20 hover:to-teal-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
+                                            <i class="fas fa-eye text-xs"></i>
+                                            <span>View</span>
+                                        </a>
+                                    @endcan
 
-                                    <button wire:click="confirmDelete({{ $item->id }})"
-                                        class="bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-1.5 rounded-lg font-medium hover:from-red-500/20 hover:to-pink-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
-                                        <i class="fas fa-trash text-xs"></i>
-                                        <span>Delete</span>
-                                    </button>
+                                    @can('update-items')
+                                        <a href="{{ route('items.edit', $item->id) }}" wire:navigate
+                                            class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 px-3 py-1.5 rounded-lg font-medium hover:from-blue-500/20 hover:to-cyan-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
+                                            <i class="fas fa-edit text-xs"></i>
+                                            <span>Edit</span>
+                                        </a>
+                                    @endcan
+
+                                    @can('delete-items')
+                                        <button wire:click="confirmDelete({{ $item->id }})"
+                                            class="bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-600 px-3 py-1.5 rounded-lg font-medium hover:from-red-500/20 hover:to-pink-500/20 transition-all duration-200 flex items-center space-x-1 text-sm">
+                                            <i class="fas fa-trash text-xs"></i>
+                                            <span>Delete</span>
+                                        </button>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
