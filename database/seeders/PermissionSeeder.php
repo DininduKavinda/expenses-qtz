@@ -16,20 +16,27 @@ class PermissionSeeder extends Seeder
             'roles' => 'Role Management',
             'permissions' => 'Permission Management',
             'grns' => 'GRN Management',
+            'grn-sessions' => 'GRN Session Management',
+            'grn-items' => 'GRN Item Management',
+            'grn-images' => 'GRN Image Management',
             'banks' => 'Bank Account Management',
+            'bank-accounts' => 'Bank Account Management',
             'bank-transactions' => 'Bank Transaction Management',
             'items' => 'Item Management',
+            'item-prices' => 'Item Price Management',
             'brands' => 'Brand Management',
             'categories' => 'Category Management',
             'units' => 'Unit Management',
             'shops' => 'Shop Management',
             'quartzs' => 'Quartz Management',
             'gdns' => 'GDN Management',
+            'gdn-items' => 'GDN Item Management',
             'expense-splits' => 'Expense Split Management',
             'contributions' => 'Contribution Management',
             'approvals' => 'Approval Management',
             'audit-logs' => 'Audit Log Viewing',
             'scheduled-collections' => 'Scheduled Collection Management',
+            'user-accounts' => 'User Account Management',
         ];
 
         $actions = [
@@ -39,6 +46,8 @@ class PermissionSeeder extends Seeder
             'update' => 'Update',
             'delete' => 'Delete',
             'manage' => 'Full Management of',
+            'confirm' => 'Confirm',
+            'process' => 'Process',
         ];
 
         foreach ($features as $slug => $name) {
