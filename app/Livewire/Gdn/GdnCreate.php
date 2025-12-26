@@ -55,12 +55,17 @@ class GdnCreate extends Component
     public function render()
     {
         $this->authorize('create', Gdn::class);
-        // Fetch items from confirmed/completed GRNs that belong to this quartz and haven't been dispatched
-        $availableItems = GrnItem::whereHas('grnSession', function ($q) {
+        $isAdmin = auth()->user()->role && auth()->user()->role->slug === 'admin';
+
+        // Fetch items from confirmed/completed GRNs and haven't been dispatched
+        $availableItems = GrnItem::whereHas('grnSession', function ($q) use ($isAdmin) {
             $q->where(function ($sq) {
                 $sq->where('status', 'confirmed')->orWhere('status', 'completed');
-            })
-                ->where('quartz_id', auth()->user()->quartz_id);
+            });
+
+            if (!$isAdmin) {
+                $q->where('quartz_id', auth()->user()->quartz_id);
+            }
         })
             ->whereDoesntHave('gdnItems')
             ->with(['item', 'grnSession.shop'])

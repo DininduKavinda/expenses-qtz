@@ -28,9 +28,13 @@ class GdnIndex extends Component
     public function render()
     {
         $this->authorize('viewAny', \App\Models\Gdn::class);
+        $isAdmin = auth()->user()->role && auth()->user()->role->slug === 'admin';
 
-        $query = \App\Models\Gdn::where('quartz_id', auth()->user()->quartz_id)
-            ->with(['user', 'gdnItems.grnItem.item', 'gdnItems.grnItem.grnSession.shop']);
+        $query = \App\Models\Gdn::with(['user', 'gdnItems.grnItem.item', 'gdnItems.grnItem.grnSession.shop']);
+
+        if (!$isAdmin) {
+            $query->where('quartz_id', auth()->user()->quartz_id);
+        }
 
         if ($this->dateFrom) {
             $query->whereDate('gdn_date', '>=', $this->dateFrom);

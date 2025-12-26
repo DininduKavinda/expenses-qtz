@@ -1,8 +1,41 @@
 <div>
     <!-- Header Section -->
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center">
+    <div class="py-4">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Mobile Header -->
+            <div class="md:hidden space-y-4 mb-6">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <a href="{{ route('banks.index') }}" wire:navigate class="text-blue-600 hover:text-blue-700">
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                        <h2 class="font-semibold text-xl text-gray-800 truncate">
+                            {{ $bankAccount->name }}
+                        </h2>
+                    </div>
+                    <p class="text-sm text-gray-500">Manage your bank account and track contributions</p>
+                </div>
+
+                <!-- Mobile Balance Card -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <p class="text-xs font-medium text-gray-500 uppercase mb-1">Current Balance</p>
+                    <div class="flex items-baseline">
+                        <p class="text-3xl font-bold text-gray-900">
+                            LKR {{ number_format($bankAccount->balance, 2) }}
+                        </p>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-gray-100">
+                        <button wire:click="$set('showAddMoneyModal', true)"
+                            class="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium flex items-center justify-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Money</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Header -->
+            <div class="hidden md:flex justify-between items-center">
                 <div>
                     <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
                         {{ $bankAccount->name }} - Overview
@@ -11,20 +44,17 @@
                 </div>
                 <button wire:click="$set('showAddMoneyModal', true)"
                     class="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium transition duration-150 ease-in-out flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Add Money
+                    <i class="fas fa-plus"></i>
+                    <span>Add Money</span>
                 </button>
             </div>
         </div>
     </div>
 
     <div class="pb-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
-
-            <!-- Balance Card -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <!-- Desktop Balance Card -->
+            <div class="hidden md:block bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
                 <div class="p-6 md:p-8">
                     <p class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Current Bank Balance</p>
                     <div class="flex items-baseline">
@@ -41,139 +71,265 @@
                 </div>
             </div>
 
-            <!-- User Status Table -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                    <h3 class="text-lg font-semibold text-gray-900">User Contribution Status</h3>
-                    <p class="text-sm text-gray-500 mt-1">Track individual contributions and pending amounts</p>
+            <!-- User Contribution Status -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <!-- Mobile User Status -->
+                <div class="md:hidden">
+                    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
+                        <h3 class="text-base font-semibold text-gray-900">User Contributions</h3>
+                        <p class="text-xs text-gray-500">Individual contribution status</p>
+                    </div>
+                    
+                    <div class="divide-y divide-gray-200">
+                        @foreach($userStatus as $status)
+                            <div class="p-4 {{ $status['is_current'] ? 'bg-yellow-50' : '' }}">
+                                <!-- User Header -->
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                            <span class="text-sm font-medium text-gray-700">
+                                                {{ strtoupper(substr($status['name'], 0, 1)) }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-medium text-gray-900">{{ $status['name'] }}</h4>
+                                            @if($status['is_current'])
+                                                <span class="text-xs text-yellow-600 font-medium">You</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-gray-500">Total Share</p>
+                                        <p class="text-sm font-bold text-gray-900">
+                                            {{ number_format($status['total_share'], 2) }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Financial Details -->
+                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <div class="bg-green-50 p-2 rounded">
+                                        <p class="text-xs text-green-600 font-medium mb-1">Paid</p>
+                                        <p class="text-sm font-bold text-green-700">
+                                            {{ number_format($status['paid'], 2) }}
+                                        </p>
+                                    </div>
+                                    <div class="bg-indigo-50 p-2 rounded">
+                                        <p class="text-xs text-indigo-600 font-medium mb-1">Credit</p>
+                                        <p class="text-sm font-bold text-indigo-700">
+                                            {{ number_format($status['unapplied_credit'], 2) }}
+                                        </p>
+                                    </div>
+                                    <div class="bg-red-50 p-2 rounded">
+                                        <p class="text-xs text-red-600 font-medium mb-1">Pending Debt</p>
+                                        <p class="text-sm font-bold text-red-700">
+                                            {{ number_format($status['pending'], 2) }}
+                                        </p>
+                                    </div>
+                                    <div class="bg-gray-50 p-2 rounded">
+                                        <p class="text-xs text-gray-600 font-medium mb-1">Net Balance</p>
+                                        <p class="text-sm font-bold {{ $status['pending'] > 0 ? 'text-red-700' : 'text-gray-700' }}">
+                                            {{ number_format($status['total_share'] - $status['paid'] - $status['unapplied_credit'] - $status['pending'], 2) }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                    User
-                                </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                    Total Share
-                                </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                    Paid toward Expenses
-                                </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                    Unapplied Credit
-                                </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                    Pending Debt
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($userStatus as $status)
-                                <tr
-                                    class="{{ $status['is_current'] ? 'bg-yellow-50 hover:bg-yellow-100' : 'hover:bg-gray-50' }} transition duration-150 ease-in-out">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                                <span class="text-sm font-medium text-gray-700">
-                                                    {{ strtoupper(substr($status['name'], 0, 1)) }}
-                                                </span>
-                                            </div>
-                                            <div class="ml-3">
-                                                <div class="text-sm font-medium text-gray-900">
-                                                    {{ $status['name'] }}
-                                                    @if($status['is_current'])
-                                                        <span
-                                                            class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                            You
-                                                        </span>
-                                                    @endif
+
+                <!-- Desktop User Status Table -->
+                <div class="hidden md:block">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                        <h3 class="text-lg font-semibold text-gray-900">User Contribution Status</h3>
+                        <p class="text-sm text-gray-500 mt-1">Track individual contributions and pending amounts</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        User
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Total Share
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Paid toward Expenses
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Unapplied Credit
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Pending Debt
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach($userStatus as $status)
+                                    <tr class="{{ $status['is_current'] ? 'bg-yellow-50 hover:bg-yellow-100' : 'hover:bg-gray-50' }} transition duration-150 ease-in-out">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                                    <span class="text-sm font-medium text-gray-700">
+                                                        {{ strtoupper(substr($status['name'], 0, 1)) }}
+                                                    </span>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        {{ $status['name'] }}
+                                                        @if($status['is_current'])
+                                                            <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                                You
+                                                            </span>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-right">
-                                        {{ number_format($status['total_share'], 2) }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                                        <div class="text-sm font-semibold text-green-600">
-                                            {{ number_format($status['paid'], 2) }}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                                        <div class="text-sm font-semibold text-indigo-600">
-                                            {{ number_format($status['unapplied_credit'], 2) }}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                                        @if($status['pending'] > 0)
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                {{ number_format($status['pending'], 2) }}
-                                            </span>
-                                        @else
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                0.00
-                                            </span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-right">
+                                            {{ number_format($status['total_share'], 2) }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right">
+                                            <div class="text-sm font-semibold text-green-600">
+                                                {{ number_format($status['paid'], 2) }}
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right">
+                                            <div class="text-sm font-semibold text-indigo-600">
+                                                {{ number_format($status['unapplied_credit'], 2) }}
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right">
+                                            @if($status['pending'] > 0)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                    {{ number_format($status['pending'], 2) }}
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    0.00
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <!-- Transaction History -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="px-4 md:px-6 py-4 border-b border-gray-200 bg-gray-50">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900">Transaction History</h3>
                             <p class="text-sm text-gray-500 mt-1">All deposits and transactions</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <select wire:model.live="filterUser"
-                                class="px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm w-full sm:w-auto">
-                                <option value="">All Users</option>
-                                @foreach($users as $u)
-                                    <option value="{{ $u->id }}">{{ $u->name }}</option>
-                                @endforeach
-                            </select>
-                            <input type="date" wire:model.live="filterDate"
-                                class="px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm w-full sm:w-auto">
+                            <div class="relative">
+                                <select wire:model.live="filterUser"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none">
+                                    <option value="">All Users</option>
+                                    @foreach($users as $u)
+                                        <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <input type="date" wire:model.live="filterDate"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    <i class="fas fa-calendar text-gray-400"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
+
+                <!-- Mobile Transaction Cards -->
+                <div class="md:hidden">
+                    @if($transactions->isNotEmpty())
+                        <div class="divide-y divide-gray-200">
+                            @foreach($transactions as $transaction)
+                                <div class="p-4 hover:bg-gray-50 transition duration-150 ease-in-out">
+                                    <!-- Transaction Header -->
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div class="flex items-center gap-2">
+                                            <div class="h-8 w-8 rounded-full {{ $transaction->type === 'deposit' ? 'bg-green-100' : 'bg-red-100' }} flex items-center justify-center">
+                                                <i class="fas {{ $transaction->type === 'deposit' ? 'fa-arrow-down text-green-600' : 'fa-arrow-up text-red-600' }}"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">
+                                                    {{ $transaction->type === 'deposit' ? 'Deposit' : 'Withdrawal' }}
+                                                </p>
+                                                <p class="text-xs text-gray-500">
+                                                    {{ \Carbon\Carbon::parse($transaction->transaction_date)->format('M d, h:i A') }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-bold {{ $transaction->type === 'deposit' ? 'text-green-600' : 'text-red-600' }}">
+                                                {{ number_format($transaction->amount, 2) }}
+                                            </p>
+                                            <p class="text-xs text-gray-500">LKR</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Transaction Details -->
+                                    <div class="space-y-2">
+                                        <div class="flex items-center gap-2">
+                                            <div class="h-5 w-5 rounded-full bg-gray-200 flex items-center justify-center">
+                                                <span class="text-xs font-medium text-gray-700">
+                                                    {{ strtoupper(substr($transaction->user?->name ?? 'S', 0, 1)) }}
+                                                </span>
+                                            </div>
+                                            <span class="text-sm text-gray-700">{{ $transaction->user?->name ?? 'System' }}</span>
+                                        </div>
+
+                                        @if($transaction->description)
+                                            <div class="bg-gray-50 p-2 rounded">
+                                                <p class="text-xs text-gray-600">{{ $transaction->description }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <!-- Empty State -->
+                        <div class="px-6 py-12 text-center">
+                            <div class="h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-exchange-alt text-gray-400 text-2xl"></i>
+                            </div>
+                            <p class="text-lg font-medium text-gray-700">No transactions found</p>
+                            <p class="text-sm text-gray-500 mt-1">Add your first transaction to get started</p>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Desktop Transaction Table -->
+                <div class="hidden md:block overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                     Date
                                 </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                     User
                                 </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                     Description
                                 </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                     Type
                                 </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                     Amount
                                 </th>
                             </tr>
@@ -191,8 +347,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div
-                                                class="flex-shrink-0 h-6 w-6 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                                            <div class="flex-shrink-0 h-6 w-6 rounded-full bg-gray-200 flex items-center justify-center mr-2">
                                                 <span class="text-xs font-medium text-gray-700">
                                                     {{ strtoupper(substr($transaction->user?->name ?? 'S', 0, 1)) }}
                                                 </span>
@@ -208,23 +363,13 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $transaction->type === 'deposit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                @if($transaction->type === 'deposit')
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                                @else
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                                @endif
-                                            </svg>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $transaction->type === 'deposit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                            <i class="fas {{ $transaction->type === 'deposit' ? 'fa-arrow-down mr-1' : 'fa-arrow-up mr-1' }} text-xs"></i>
                                             {{ ucfirst($transaction->type) }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right">
-                                        <div
-                                            class="text-sm font-semibold {{ $transaction->type === 'deposit' ? 'text-green-600' : 'text-red-600' }}">
+                                        <div class="text-sm font-semibold {{ $transaction->type === 'deposit' ? 'text-green-600' : 'text-red-600' }}">
                                             {{ number_format($transaction->amount, 2) }}
                                         </div>
                                         <div class="text-xs text-gray-500">LKR</div>
@@ -234,14 +379,11 @@
                                 <tr>
                                     <td colspan="5" class="px-6 py-12 text-center">
                                         <div class="text-gray-400">
-                                            <svg class="mx-auto h-12 w-12 mb-3" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
+                                            <div class="h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <i class="fas fa-exchange-alt text-gray-400 text-2xl"></i>
+                                            </div>
                                             <p class="text-lg font-medium text-gray-500">No transactions found</p>
-                                            <p class="text-sm text-gray-400 mt-1">Add your first transaction to get started
-                                            </p>
+                                            <p class="text-sm text-gray-400 mt-1">Add your first transaction to get started</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -250,7 +392,6 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -262,22 +403,24 @@
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-900">Add Money to Bank Account</h3>
                         <button wire:click="$set('showAddMoneyModal', false)" class="text-gray-400 hover:text-gray-500">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
 
-                    <div class="space-y-5">
+                    <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">User (Payer)</label>
-                            <select wire:model="user_id"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                                @foreach($users as $u)
-                                    <option value="{{ $u->id }}">{{ $u->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="relative">
+                                <select wire:model="user_id"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none">
+                                    @foreach($users as $u)
+                                        <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                </div>
+                            </div>
                             @error('user_id')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -290,7 +433,7 @@
                                     LKR
                                 </span>
                                 <input type="number" step="0.01" wire:model="amount"
-                                    class="w-full pl-12 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                    class="w-full pl-12 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                     placeholder="0.00">
                             </div>
                             @error('amount')
@@ -300,8 +443,13 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                            <input type="date" wire:model="transaction_date"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            <div class="relative">
+                                <input type="date" wire:model="transaction_date"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    <i class="fas fa-calendar text-gray-400"></i>
+                                </div>
+                            </div>
                             @error('transaction_date')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -309,9 +457,14 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
-                            <textarea wire:model="description" rows="3"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                placeholder="Enter description"></textarea>
+                            <div class="relative">
+                                <textarea wire:model="description" rows="3"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                    placeholder="Enter description"></textarea>
+                                <div class="absolute right-3 top-3 pointer-events-none">
+                                    <i class="fas fa-comment text-gray-400"></i>
+                                </div>
+                            </div>
                             @error('description')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -320,13 +473,13 @@
                 </div>
 
                 <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
-                    <div class="flex justify-end space-x-3">
+                    <div class="flex flex-col sm:flex-row justify-end gap-3">
                         <button wire:click="$set('showAddMoneyModal', false)"
-                            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
+                            class="w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
                             Cancel
                         </button>
                         <button wire:click="addMoney"
-                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
+                            class="w-full sm:w-auto px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out font-medium">
                             Add Money
                         </button>
                     </div>
@@ -339,28 +492,66 @@
     @if (session()->has('message'))
         <div class="fixed bottom-4 right-4 z-50 animate-fade-in">
             <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
+                <i class="fas fa-check-circle"></i>
                 {{ session('message') }}
             </div>
         </div>
     @endif
+
     <style>
         @keyframes fade-in {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
         .animate-fade-in {
             animation: fade-in 0.3s ease-out;
+        }
+
+        /* Prevent zoom on iOS input focus */
+        @media screen and (max-width: 768px) {
+            input[type="date"],
+            input[type="text"],
+            input[type="number"],
+            textarea,
+            select {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Better touch targets */
+        @media screen and (max-width: 768px) {
+            button, a {
+                min-height: 44px;
+            }
+            
+            /* Card hover effects */
+            .hover\\:bg-gray-50 {
+                transition: background-color 0.2s ease;
+            }
+        }
+
+        /* Smooth transitions */
+        .transition-shadow {
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        /* Better focus states */
+        button:focus, input:focus, textarea:focus, select:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* Custom scrollbar for mobile */
+        @media screen and (max-width: 768px) {
+            .overflow-x-auto {
+                -webkit-overflow-scrolling: touch;
+            }
         }
     </style>
 </div>

@@ -3,15 +3,36 @@
 namespace App\Livewire\Expense;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class MyExpenses extends Component
 {
+    use WithPagination;
     public $bankAccounts;
     public $selectedBankId;
     public $paymentAmount;
     public $showPayModal = false;
     public $showApplyDepositModal = false;
     public $selectedDepositId;
+
+    public $dateFrom;
+    public $dateTo;
+    public $selectedStatus = '';
+    public $searchQuery = '';
+
+    protected $queryString = [
+        'dateFrom' => ['except' => ''],
+        'dateTo' => ['except' => ''],
+        'selectedStatus' => ['except' => ''],
+        'searchQuery' => ['except' => ''],
+    ];
+
+    public function updated($property)
+    {
+        if (in_array($property, ['dateFrom', 'dateTo', 'selectedStatus', 'searchQuery'])) {
+            $this->resetPage();
+        }
+    }
 
     public function mount()
     {
@@ -36,7 +57,29 @@ class MyExpenses extends Component
             $query->where('user_id', auth()->id());
         }
 
-        return $query->latest()->get();
+        if ($this->dateFrom) {
+            $query->whereDate('created_at', '>=', $this->dateFrom);
+        }
+
+        if ($this->dateTo) {
+            $query->whereDate('created_at', '<=', $this->dateTo);
+        }
+
+        if ($this->selectedStatus) {
+            $query->where('status', $this->selectedStatus);
+        }
+
+        if ($this->searchQuery) {
+            $query->where(function ($q) {
+                $q->whereHas('grnItem.item', function ($iq) {
+                    $iq->where('name', 'like', '%' . $this->searchQuery . '%');
+                })->orWhereHas('grnItem.grnSession.shop', function ($sq) {
+                    $sq->where('name', 'like', '%' . $this->searchQuery . '%');
+                });
+            });
+        }
+
+        return $query->latest()->paginate(15);
     }
 
     public function getTotalPendingProperty()
