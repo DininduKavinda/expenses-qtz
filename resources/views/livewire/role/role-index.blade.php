@@ -68,9 +68,8 @@
                             @endcan
 
                             @can('delete', $role)
-                                <button wire:click="deleteRole({{ $role->id }})"
-                                    wire:confirm="Are you sure you want to delete this role?"
-                                    class="text-red-600 hover:text-red-900" title="Delete Role">
+                                <button wire:click="confirmDelete({{ $role->id }})" class="text-red-600 hover:text-red-900"
+                                    title="Delete Role">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             @endcan
@@ -132,6 +131,47 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Delete Confirmation Modal -->
+    @if($showDeleteModal)
+        <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center space-x-3">
+                        <div
+                            class="h-10 w-10 rounded-full bg-gradient-to-br from-red-500/10 to-pink-500/10 flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-red-500 text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Delete Role</h3>
+                            <p class="text-gray-600 text-sm mt-0.5">This action cannot be undone</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6">
+                    <p class="text-gray-700">
+                        Are you sure you want to delete this role? Users assigned to this role will need to be reassigned.
+                    </p>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                    <button wire:click="$set('showDeleteModal', false)"
+                        class="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm">
+                        Cancel
+                    </button>
+                    <button wire:click="deleteRole({{ $roleIdToDelete }})"
+                        class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium shadow-sm hover:shadow transition-all text-sm flex items-center space-x-2">
+                        <i class="fas fa-trash text-xs"></i>
+                        <span>Yes, Delete</span>
+                    </button>
+                </div>
             </div>
         </div>
     @endif

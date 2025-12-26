@@ -13,7 +13,9 @@ class RoleIndex extends Component
 
     public $showCreateModal = false;
     public $showEditModal = false;
+    public $showDeleteModal = false;
     public $roleId;
+    public $roleIdToDelete;
     public $name, $slug, $description;
 
     protected $rules = [
@@ -81,6 +83,12 @@ class RoleIndex extends Component
         session()->flash('message', 'Role updated successfully.');
     }
 
+    public function confirmDelete($id)
+    {
+        $this->roleIdToDelete = $id;
+        $this->showDeleteModal = true;
+    }
+
     public function deleteRole($id)
     {
         $role = Role::findOrFail($id);
@@ -88,10 +96,13 @@ class RoleIndex extends Component
 
         if ($role->users()->count() > 0) {
             session()->flash('error', 'Cannot delete role that has assigned users.');
+            $this->showDeleteModal = false;
             return;
         }
 
         $role->delete();
+        $this->showDeleteModal = false;
+        $this->roleIdToDelete = null;
         session()->flash('message', 'Role deleted successfully.');
     }
 

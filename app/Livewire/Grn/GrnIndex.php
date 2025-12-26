@@ -13,6 +13,8 @@ class GrnIndex extends Component
     public $selectedShop;
     public $selectedStatus;
     public $searchQuery;
+    public $showDeleteModal = false;
+    public $grnIdToDelete = null;
 
     protected $queryString = [
         'dateFrom' => ['except' => ''],
@@ -33,6 +35,25 @@ class GrnIndex extends Component
         if (in_array($propertyName, ['dateFrom', 'dateTo', 'selectedShop', 'selectedStatus', 'searchQuery'])) {
             $this->resetPage();
         }
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->grnIdToDelete = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function delete($id)
+    {
+        $grn = \App\Models\GrnSession::findOrFail($id);
+        $this->authorize('delete', $grn);
+
+        $grn->delete();
+
+        $this->showDeleteModal = false;
+        $this->grnIdToDelete = null;
+
+        session()->flash('message', 'GRN session deleted successfully.');
     }
 
     public function render()
@@ -79,13 +100,5 @@ class GrnIndex extends Component
             'grns' => $grns,
             'shops' => \App\Models\Shop::all(),
         ]);
-    }
-
-    public function delete($id)
-    {
-        $grn = \App\Models\GrnSession::findOrFail($id);
-        $this->authorize('delete', $grn);
-        $grn->delete();
-        session()->flash('message', 'GRN Session deleted successfully.');
     }
 }

@@ -17,7 +17,9 @@ class UserIndex extends Component
 
     public $showCreateModal = false;
     public $showEditModal = false;
+    public $showDeleteModal = false;
     public $userId;
+    public $userIdToDelete;
     public $name, $email, $role_id, $quartz_id, $password, $active = true;
 
     protected $rules = [
@@ -110,6 +112,29 @@ class UserIndex extends Component
 
         $this->showEditModal = false;
         session()->flash('message', 'User updated successfully.');
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->userIdToDelete = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
+        $this->authorize('delete', $user);
+
+        if ($user->id === auth()->id()) {
+            session()->flash('error', 'You cannot delete your own account.');
+            $this->showDeleteModal = false;
+            return;
+        }
+
+        $user->delete();
+        $this->showDeleteModal = false;
+        $this->userIdToDelete = null;
+        session()->flash('message', 'User deleted successfully.');
     }
 
     public function render()
