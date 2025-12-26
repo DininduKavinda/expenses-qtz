@@ -32,8 +32,7 @@
                         class="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 focus:bg-white transition-all text-sm">
                         <option value="">No Parent Category</option>
                         @foreach ($parentCategories as $parentCategory)
-                            <option value="{{ $parentCategory->id }}" 
-                                {{ $category->parent_id == $parentCategory->id ? 'selected' : '' }}>
+                            <option value="{{ $parentCategory->id }}" {{ $category->parent_id == $parentCategory->id ? 'selected' : '' }}>
                                 {{ $parentCategory->name }}
                             </option>
                         @endforeach
@@ -58,11 +57,9 @@
                     <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
                         <i class="fas fa-font"></i>
                     </div>
-                    <input type="text" 
-                           wire:model="name" 
-                           placeholder="e.g., Office Supplies, Travel, Marketing"
-                           class="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 focus:bg-white transition-all text-sm"
-                           autofocus>
+                    <input type="text" wire:model="name" placeholder="e.g., Office Supplies, Travel, Marketing"
+                        class="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 focus:bg-white transition-all text-sm"
+                        autofocus>
                 </div>
 
                 @error('name')
@@ -83,16 +80,14 @@
 
             <!-- Update/Cancel Buttons -->
             <div class="flex items-center space-x-3">
-                <a href="{{ route('categories.index') }}" 
-                   wire:navigate
-                   class="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm flex items-center space-x-2">
+                <a href="{{ route('categories.index') }}" wire:navigate
+                    class="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm flex items-center space-x-2">
                     <i class="fas fa-times"></i>
                     <span>Cancel</span>
                 </a>
 
-                <button type="submit" 
-                        wire:click="update"
-                        class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center space-x-2 text-sm">
+                <button type="submit" wire:click="update"
+                    class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center space-x-2 text-sm">
                     <i class="fas fa-check"></i>
                     <span>Update Category</span>
                 </button>

@@ -371,8 +371,7 @@
 
             <!-- Update/Cancel Buttons -->
             <div class="flex items-center space-x-3">
-                <a href="{{ route('items.index') }}" 
-                   wire:navigate
+                <a href="{{ route('items.index') }}" wire:navigate
                    class="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm flex items-center space-x-2">
                     <i class="fas fa-times"></i>
                     <span>Cancel</span>

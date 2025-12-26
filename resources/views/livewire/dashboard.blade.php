@@ -134,8 +134,8 @@
             <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-bold text-gray-800">Recent Personal Expenses</h3>
-                    <a href="{{ route('my-expenses') }}" class="text-xs font-bold text-indigo-600 hover:underline">View
-                        All</a>
+                    <a wire:navigate href="{{ route('my-expenses') }}"
+                        class="text-xs font-bold text-indigo-600 hover:underline">View All</a>
                 </div>
                 <div class="space-y-4">
                     @forelse($recentPersonalExpenses as $expense)

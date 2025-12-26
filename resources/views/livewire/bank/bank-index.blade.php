@@ -99,7 +99,7 @@
                 <div class="md:hidden space-y-4">
                     @foreach($accounts as $account)
                         @can('view-banks')
-                            <a href="{{ route('banks.show', $account) }}" class="block">
+                            <a wire:navigate href="{{ route('banks.show', $account) }}" class="block">
                                 <div
                                     class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
                                     <!-- Card Header -->
@@ -157,7 +157,7 @@
                 <div class="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($accounts as $account)
                         @can('view-banks')
-                            <a href="{{ route('banks.show', $account) }}" class="block">
+                            <a wire:navigate href="{{ route('banks.show', $account) }}" class="block">
                                 <div
                                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:shadow-md transition duration-150 ease-in-out h-full border border-gray-100">
                                     <div class="flex flex-col h-full">
