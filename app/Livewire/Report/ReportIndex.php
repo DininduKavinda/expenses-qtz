@@ -36,6 +36,14 @@ class ReportIndex extends Component
     {
         $this->dateFrom = now()->startOfMonth()->format('Y-m-d');
         $this->dateTo = now()->endOfMonth()->format('Y-m-d');
+
+        $user = auth()->user();
+        $isAdmin = $user->role && $user->role->slug === 'admin';
+
+        if (!$isAdmin && $user->quartz_id) {
+            $this->selectedQuartz = $user->quartz_id;
+        }
+
         $this->generateReport();
     }
 
@@ -76,7 +84,14 @@ class ReportIndex extends Component
         $query = ExpenseSplit::whereHas('grnItem.item.category')
             ->whereBetween('created_at', [$this->dateFrom . ' 00:00:00', $this->dateTo . ' 23:59:59']);
 
-        if ($this->selectedQuartz) {
+        $user = auth()->user();
+        $isAdmin = $user->role && $user->role->slug === 'admin';
+
+        if (!$isAdmin && $user->quartz_id) {
+            $query->whereHas('user', function ($q) use ($user) {
+                $q->where('quartz_id', $user->quartz_id);
+            });
+        } elseif ($this->selectedQuartz) {
             $query->whereHas('user', function ($q) {
                 $q->where('quartz_id', $this->selectedQuartz);
             });
@@ -131,7 +146,7 @@ class ReportIndex extends Component
 
         $users = $query->with('userAccount')->get();
 
-        $this->reportData = $users->map(function ($user) {
+        $this->reportData = collect($users->map(function ($user) {
             $totalDeposits = BankTransaction::where('user_id', $user->id)->where('type', 'deposit')->sum('amount');
             $totalApplied = BankTransaction::where('user_id', $user->id)->where('type', 'withdrawal')->whereNotNull('source_transaction_id')->sum('amount');
             $pendingDebt = ExpenseSplit::where('user_id', $user->id)->where('status', 'pending')->sum('amount');
@@ -143,7 +158,7 @@ class ReportIndex extends Component
                 'available_credit' => (float)max(0, $totalDeposits - $totalApplied),
                 'total_deposits' => (float)$totalDeposits
             ];
-        });
+        }));
 
         $this->chartData = [
             'labels' => $this->reportData->pluck('name')->toArray(),
@@ -154,10 +169,17 @@ class ReportIndex extends Component
 
     private function generateBankAudit()
     {
+        $user = auth()->user();
+        $isAdmin = $user->role && $user->role->slug === 'admin';
+
         $query = BankTransaction::whereBetween('transaction_date', [$this->dateFrom, $this->dateTo])
             ->with(['bankAccount', 'user']);
 
-        if ($this->selectedBank) {
+        if (!$isAdmin && $user->quartz_id) {
+            $query->whereHas('user', function ($q) use ($user) {
+                $q->where('quartz_id', $user->quartz_id);
+            });
+        } elseif ($this->selectedBank) {
             $query->where('bank_account_id', $this->selectedBank);
         }
 
@@ -177,10 +199,19 @@ class ReportIndex extends Component
             return;
         }
 
+        $user = auth()->user();
+        $isAdmin = $user->role && $user->role->slug === 'admin';
+
         $query = GrnItem::where('item_id', $this->selectedItem)
-            ->whereHas('grnSession', function ($q) {
+            ->whereHas('grnSession', function ($q) use ($user, $isAdmin) {
                 $q->where('status', 'confirmed')
                     ->whereBetween('session_date', [$this->dateFrom, $this->dateTo]);
+
+                if (!$isAdmin && $user->quartz_id) {
+                    $q->where('quartz_id', $user->quartz_id);
+                } elseif ($this->selectedQuartz) {
+                    $q->where('quartz_id', $this->selectedQuartz);
+                }
             })
             ->with(['grnSession.shop', 'unit']);
 
@@ -208,11 +239,26 @@ class ReportIndex extends Component
 
     public function render()
     {
+        $user = auth()->user();
+        $isAdmin = $user->role && $user->role->slug === 'admin';
+
+        $shopsQuery = Shop::query();
+        $usersQuery = User::query();
+        $banksQuery = BankAccount::query();
+
+        if (!$isAdmin && $user->quartz_id) {
+            // For shops, technically they are global but maybe filter by shops that have sessions in this quartz?
+            // For now, keep shops global unless specific requirements say otherwise.
+
+            // Filter users by quartz
+            $usersQuery->where('quartz_id', $user->quartz_id);
+        }
+
         return view('livewire.report.report-index', [
             'quartzes' => Quartz::all(),
-            'shops' => Shop::all(),
-            'users' => User::all(),
-            'banks' => BankAccount::all(),
+            'shops' => $shopsQuery->get(),
+            'users' => $usersQuery->get(),
+            'banks' => $banksQuery->get(),
             'items' => Item::all(),
         ]);
     }

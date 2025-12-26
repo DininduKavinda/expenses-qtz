@@ -47,6 +47,7 @@
                     </div>
 
                     <!-- Quartz Filter -->
+                    @if(auth()->user()->role && auth()->user()->role->slug === 'admin')
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase mb-2">Quartz</label>
                         <select wire:model.live="selectedQuartz" class="w-full bg-gray-50 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-500">
@@ -56,6 +57,7 @@
                             @endforeach
                         </select>
                     </div>
+                    @endif
 
                     @if(in_array($activeReport, ['shop_expenditure', 'item_trend']))
                         <div>
@@ -311,11 +313,20 @@
             let chart = null;
 
             const initChart = () => {
-                const chartType = '{{ $activeReport }}';
                 const container = document.querySelector("#reportChart");
                 if (!container) return;
 
-                if (chart) chart.destroy();
+                // Important: Only destroy if chart exists and container still contains chart
+                if (chart) {
+                    chart.destroy();
+                    chart = null;
+                }
+                
+                // Clear container to be safe
+                container.innerHTML = '';
+
+                const chartType = @js($activeReport);
+                const data = @js($chartData);
 
                 let options = {
                     chart: {
@@ -326,8 +337,6 @@
                     colors: ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'],
                     tooltip: { theme: 'dark' }
                 };
-
-                const data = @json($chartData);
 
                 if (chartType === 'category_summary' || chartType === 'shop_expenditure') {
                     options = {
@@ -394,14 +403,19 @@
                 }
             };
 
+            // First initialization
             initChart();
 
+            // Re-init on Livewire updates (e.g., filter changes)
             Livewire.on('reportGenerated', () => {
-                setTimeout(initChart, 100);
+                setTimeout(initChart, 50);
             });
             
-            // Re-init on navigate
-            document.addEventListener('livewire:navigated', initChart);
+            // Re-init on navigation (SPA)
+            document.addEventListener('livewire:navigated', () => {
+                // Small delay to ensure DOM is ready
+                setTimeout(initChart, 50);
+            });
         });
     </script>
 </div>
