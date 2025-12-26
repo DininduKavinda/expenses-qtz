@@ -112,7 +112,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 md:col-span-2">
+                {{-- <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 md:col-span-2">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-sm font-black text-gray-800 uppercase tracking-widest">Personal Spending (Last 7
                             Days)</h3>
@@ -123,7 +123,7 @@
                         </div>
                     </div>
                     <div id="personalTrendChart" class="w-full h-48" wire:ignore></div>
-                </div>
+                </div> --}}
 
 
             </div>

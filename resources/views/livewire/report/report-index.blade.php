@@ -128,7 +128,7 @@
         <!-- Report Data Display -->
         <div class="lg:col-span-3 space-y-8">
             <!-- Visual Representation -->
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8" wire:ignore id="reportChartContainer">
+            {{-- <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8" wire:ignore id="reportChartContainer">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-sm font-black text-gray-800 uppercase tracking-widest">Visual Analysis</h3>
                     <div id="reportChartType" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg uppercase">
@@ -136,7 +136,7 @@
                     </div>
                 </div>
                 <div id="reportChart" class="w-full h-80"></div>
-            </div>
+            </div> --}}
 
             <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden min-h-[500px]">
                 <!-- Report Contents based on Selection -->
