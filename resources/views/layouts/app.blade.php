@@ -22,7 +22,8 @@
         metadata: false,
         goods: false,
         management: false
-    }
+    },
+    sidebarOpen: true
 }" @route-updated.window="handleRouteChange">
 
     <!-- MOBILE HEADER -->
@@ -97,7 +98,6 @@
         @click.self="more = false">
         <div x-show="more" x-transition.duration.300ms
             class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 shadow-xl max-h-[85vh] overflow-y-auto">
-
             <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4"></div>
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-800">All Modules</h2>
@@ -326,384 +326,374 @@
         </div>
     </div>
 
-    <!-- MAIN LAYOUT -->
-    <div class="flex min-h-screen pt-16 md:pt-0">
-
-        <!-- DESKTOP SIDEBAR -->
-        <aside
-            class="hidden md:flex w-72 bg-gradient-to-b from-indigo-900 via-purple-900 to-violet-900 shadow-2xl backdrop-blur-lg border-r border-white/10 px-6 py-8 flex flex-col">
-
+    <!-- DESKTOP LAYOUT -->
+    <div class="hidden md:flex min-h-screen">
+        <!-- FIXED SIDEBAR -->
+        <aside :class="sidebarOpen ? 'w-72' : 'w-20'"
+            class="fixed left-0 top-0 bottom-0 bg-gradient-to-b from-indigo-900 to-purple-900 text-white transition-all duration-300 z-40">
             <!-- Logo -->
-            <div class="mb-10 px-2">
-                <div class="flex items-center space-x-3">
+            <div class="p-6 border-b border-white/10">
+                <div class="flex items-center space-x-3" :class="!sidebarOpen && 'justify-center'">
                     <div
-                        class="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg">
+                        class="h-12 w-12 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg shrink-0">
                         <i class="fas fa-gem text-white text-lg"></i>
                     </div>
-                    <div>
-                        <h1
-                            class="text-2xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
-                            Quartz System</h1>
-                        <p class="text-xs text-gray-300/70 mt-0.5">Expense Management</p>
+                    <div x-show="sidebarOpen" x-transition>
+                        <h1 class="text-xl font-bold text-white">Quartz System</h1>
+                        <p class="text-xs text-gray-300/70">Expense Management</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Navigation -->
-            <nav class="space-y-1 flex-1 overflow-y-auto">
-                <!-- Quick Access -->
-                <div class="px-2 mb-2">
-                    <p class="text-xs font-semibold text-gray-400/70 uppercase tracking-wider">Quick Access</p>
-                </div>
+            <!-- Toggle Button -->
+            <div class="p-4 border-b border-white/10 flex justify-end">
+                <button @click="sidebarOpen = !sidebarOpen"
+                    class="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
+                    <i class="fas fa-chevron-left text-white text-sm transition-transform"
+                        :class="!sidebarOpen && 'rotate-180'"></i>
+                </button>
+            </div>
 
+            <!-- Navigation Menu -->
+            <nav class="p-4 overflow-y-auto h-[calc(100vh-200px)]">
                 <!-- Dashboard -->
                 <a href="{{ route('dashboard') }}" wire:navigate
-                    class="flex items-center space-x-3 p-3 rounded-xl {{ request()->routeIs('dashboard') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                    class="flex items-center space-x-3 p-3 rounded-lg mb-2 {{ request()->routeIs('dashboard') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                     <div
-                        class="h-9 w-9 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gradient-to-br from-blue-600 to-cyan-500 ring-2 ring-cyan-300' : 'bg-gradient-to-br from-blue-500 to-cyan-400' }} flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                        class="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shrink-0">
                         <i class="fas fa-chart-pie text-white text-sm"></i>
                     </div>
-                    <span
-                        class="font-medium {{ request()->routeIs('dashboard') ? 'text-white' : 'text-gray-200 group-hover:text-white' }}">Dashboard</span>
+                    <span x-show="sidebarOpen" x-transition class="font-medium">Dashboard</span>
                 </a>
 
                 <!-- Reports -->
                 @can('view-any-reports')
                     <a href="{{ route('reports') }}" wire:navigate
-                        class="flex items-center space-x-3 p-3 rounded-xl {{ request()->routeIs('reports') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                        class="flex items-center space-x-3 p-3 rounded-lg mb-2 {{ request()->routeIs('reports') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                         <div
-                            class="h-9 w-9 rounded-lg {{ request()->routeIs('reports') ? 'bg-gradient-to-br from-indigo-600 to-blue-700 ring-2 ring-blue-300' : 'bg-gradient-to-br from-indigo-500 to-blue-600' }} flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                            class="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-600 to-blue-700 flex items-center justify-center shrink-0">
                             <i class="fas fa-chart-bar text-white text-sm"></i>
                         </div>
-                        <span
-                            class="font-medium {{ request()->routeIs('reports') ? 'text-white' : 'text-gray-200 group-hover:text-white' }}">Reports</span>
+                        <span x-show="sidebarOpen" x-transition class="font-medium">Reports</span>
                     </a>
                 @endcan
 
-                <!-- Metadata Dropdown -->
-                @php
-                    $isMetadataActive = request()->routeIs('categories.*') ||
-                        request()->routeIs('brands.*') ||
-                        request()->routeIs('shops.*') ||
-                        request()->routeIs('units.*') ||
-                        request()->routeIs('quartzs.*');
-                @endphp
-                <div x-data="{ open: {{ $isMetadataActive ? 'true' : 'false' }} }" class="mt-4">
-                    <button @click="open = !open"
-                        class="w-full flex items-center justify-between p-3 rounded-xl {{ $isMetadataActive ? 'bg-white/20' : 'hover:bg-white/10' }} group">
-                        <div class="flex items-center space-x-3">
-                            <div
-                                class="h-9 w-9 rounded-lg {{ $isMetadataActive ? 'bg-gradient-to-br from-purple-600 to-pink-600 ring-2 ring-pink-300' : 'bg-gradient-to-br from-purple-500 to-pink-500' }} flex items-center justify-center shadow-md">
-                                <i class="fas fa-database text-white text-sm"></i>
-                            </div>
-                            <span
-                                class="font-medium {{ $isMetadataActive ? 'text-white' : 'text-gray-200 group-hover:text-white' }}">Metadata</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform"
-                            :class="{ 'rotate-180': open, 'text-white': {{ $isMetadataActive ? 'true' : 'false' }} }"></i>
-                    </button>
-
-                    <div x-show="open" x-collapse class="ml-4 pl-4 border-l border-white/10 space-y-1 mt-1">
+                <!-- Metadata Group -->
+                <div class="mb-4">
+                    <div x-show="sidebarOpen" x-transition
+                        class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Metadata</div>
+                    <div class="space-y-1">
                         @can('view-any-categories')
                             <a href="{{ route('categories.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('categories.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('categories.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('categories.*') ? 'bg-purple-500/40' : 'bg-purple-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-tag {{ request()->routeIs('categories.*') ? 'text-purple-200' : 'text-purple-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-tags text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('categories.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">Categories</span>
+                                <span x-show="sidebarOpen" x-transition>Categories</span>
                             </a>
                         @endcan
 
                         @can('view-any-brands')
                             <a href="{{ route('brands.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('brands.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('brands.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('brands.*') ? 'bg-orange-500/40' : 'bg-orange-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-copyright {{ request()->routeIs('brands.*') ? 'text-orange-200' : 'text-orange-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-copyright text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('brands.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">Brands</span>
+                                <span x-show="sidebarOpen" x-transition>Brands</span>
                             </a>
                         @endcan
 
                         @can('view-any-shops')
                             <a href="{{ route('shops.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('shops.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('shops.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('shops.*') ? 'bg-yellow-500/40' : 'bg-yellow-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-shop {{ request()->routeIs('shops.*') ? 'text-yellow-200' : 'text-yellow-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-yellow-500 to-green-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-shop text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('shops.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">Shops</span>
+                                <span x-show="sidebarOpen" x-transition>Shops</span>
                             </a>
                         @endcan
 
                         @can('view-any-units')
                             <a href="{{ route('units.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('units.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('units.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('units.*') ? 'bg-cyan-500/40' : 'bg-cyan-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-balance-scale {{ request()->routeIs('units.*') ? 'text-cyan-200' : 'text-cyan-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-balance-scale text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('units.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">Units</span>
+                                <span x-show="sidebarOpen" x-transition>Units</span>
                             </a>
                         @endcan
 
                         @can('view-any-quartzs')
                             <a href="{{ route('quartzs.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('quartzs.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('quartzs.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('quartzs.*') ? 'bg-red-500/40' : 'bg-red-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-home {{ request()->routeIs('quartzs.*') ? 'text-red-200' : 'text-red-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-red-500 to-yellow-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-home text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('quartzs.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">Quartzs</span>
+                                <span x-show="sidebarOpen" x-transition>Quartzs</span>
                             </a>
                         @endcan
                     </div>
                 </div>
 
-                <!-- Goods Management Dropdown -->
-                @php
-                    $isGoodsActive = request()->routeIs('items.*') ||
-                        request()->routeIs('grns.*') ||
-                        request()->routeIs('gdns.*');
-                @endphp
-                <div x-data="{ open: {{ $isGoodsActive ? 'true' : 'false' }} }" class="mt-2">
-                    <button @click="open = !open"
-                        class="w-full flex items-center justify-between p-3 rounded-xl {{ $isGoodsActive ? 'bg-white/20' : 'hover:bg-white/10' }} group">
-                        <div class="flex items-center space-x-3">
-                            <div
-                                class="h-9 w-9 rounded-lg {{ $isGoodsActive ? 'bg-gradient-to-br from-emerald-600 to-teal-600 ring-2 ring-teal-300' : 'bg-gradient-to-br from-emerald-500 to-teal-500' }} flex items-center justify-center shadow-md">
-                                <i class="fas fa-boxes text-white text-sm"></i>
-                            </div>
-                            <span
-                                class="font-medium {{ $isGoodsActive ? 'text-white' : 'text-gray-200 group-hover:text-white' }}">Goods
-                                Management</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform"
-                            :class="{ 'rotate-180': open, 'text-white': {{ $isGoodsActive ? 'true' : 'false' }} }"></i>
-                    </button>
-
-                    <div x-show="open" x-collapse class="ml-4 pl-4 border-l border-white/10 space-y-1 mt-1">
+                <!-- Goods Management Group -->
+                <div class="mb-4">
+                    <div x-show="sidebarOpen" x-transition
+                        class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Goods Management
+                    </div>
+                    <div class="space-y-1">
                         @can('view-any-items')
                             <a href="{{ route('items.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('items.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('items.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('items.*') ? 'bg-emerald-500/40' : 'bg-emerald-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-cube {{ request()->routeIs('items.*') ? 'text-emerald-200' : 'text-emerald-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-cube text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('items.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">Items</span>
+                                <span x-show="sidebarOpen" x-transition>Items</span>
                             </a>
                         @endcan
 
                         @can('view-any-grns')
                             <a href="{{ route('grns.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('grns.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('grns.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('grns.*') ? 'bg-amber-500/40' : 'bg-amber-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-arrow-down {{ request()->routeIs('grns.*') ? 'text-amber-200' : 'text-amber-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-arrow-down text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('grns.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">GRN</span>
+                                <span x-show="sidebarOpen" x-transition>GRN</span>
                             </a>
                         @endcan
 
                         @can('view-any-gdns')
                             <a href="{{ route('gdns.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('gdns.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('gdns.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('gdns.*') ? 'bg-rose-500/40' : 'bg-rose-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-arrow-up {{ request()->routeIs('gdns.*') ? 'text-rose-200' : 'text-rose-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-arrow-up text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('gdns.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">GDN</span>
+                                <span x-show="sidebarOpen" x-transition>GDN</span>
                             </a>
                         @endcan
                     </div>
                 </div>
 
-                <!-- Financial Dropdown -->
-                @php
-                    $isFinancialActive = request()->routeIs('banks.*') ||
-                        request()->routeIs('my-expenses');
-                @endphp
-                <div x-data="{ open: {{ $isFinancialActive ? 'true' : 'false' }} }" class="mt-2">
-                    <button @click="open = !open"
-                        class="w-full flex items-center justify-between p-3 rounded-xl {{ $isFinancialActive ? 'bg-white/20' : 'hover:bg-white/10' }} group">
-                        <div class="flex items-center space-x-3">
-                            <div
-                                class="h-9 w-9 rounded-lg {{ $isFinancialActive ? 'bg-gradient-to-br from-green-600 to-emerald-600 ring-2 ring-emerald-300' : 'bg-gradient-to-br from-green-500 to-emerald-500' }} flex items-center justify-center shadow-md">
-                                <i class="fas fa-money-bill-wave text-white text-sm"></i>
-                            </div>
-                            <span
-                                class="font-medium {{ $isFinancialActive ? 'text-white' : 'text-gray-200 group-hover:text-white' }}">Financial</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform"
-                            :class="{ 'rotate-180': open, 'text-white': {{ $isFinancialActive ? 'true' : 'false' }} }"></i>
-                    </button>
-
-                    <div x-show="open" x-collapse class="ml-4 pl-4 border-l border-white/10 space-y-1 mt-1">
+                <!-- Financial Group -->
+                <div class="mb-4">
+                    <div x-show="sidebarOpen" x-transition
+                        class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Financial</div>
+                    <div class="space-y-1">
                         @can('view-any-banks')
                             <a href="{{ route('banks.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('banks.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('banks.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('banks.*') ? 'bg-green-500/40' : 'bg-green-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-university {{ request()->routeIs('banks.*') ? 'text-green-200' : 'text-green-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-university text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('banks.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">Bank
-                                    Accounts</span>
+                                <span x-show="sidebarOpen" x-transition>Banks</span>
                             </a>
                         @endcan
 
                         @can('view-any-expense-splits')
                             <a href="{{ route('my-expenses') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('my-expenses') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('my-expenses') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('my-expenses') ? 'bg-rose-500/40' : 'bg-rose-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-receipt {{ request()->routeIs('my-expenses') ? 'text-rose-200' : 'text-rose-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-receipt text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('my-expenses') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">My
-                                    Expenses</span>
+                                <span x-show="sidebarOpen" x-transition>My Expenses</span>
                             </a>
                         @endcan
                     </div>
                 </div>
 
-                <!-- Administration Dropdown -->
-                @php
-                    $isAdminActive = request()->routeIs('users.*') ||
-                        request()->routeIs('roles.*');
-                @endphp
-                <div x-data="{ open: {{ $isAdminActive ? 'true' : 'false' }} }" class="mt-2">
-                    <button @click="open = !open"
-                        class="w-full flex items-center justify-between p-3 rounded-xl {{ $isAdminActive ? 'bg-white/20' : 'hover:bg-white/10' }} group">
-                        <div class="flex items-center space-x-3">
-                            <div
-                                class="h-9 w-9 rounded-lg {{ $isAdminActive ? 'bg-gradient-to-br from-violet-600 to-purple-600 ring-2 ring-purple-300' : 'bg-gradient-to-br from-violet-500 to-purple-500' }} flex items-center justify-center shadow-md">
-                                <i class="fas fa-user-cog text-white text-sm"></i>
-                            </div>
-                            <span
-                                class="font-medium {{ $isAdminActive ? 'text-white' : 'text-gray-200 group-hover:text-white' }}">Administration</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform"
-                            :class="{ 'rotate-180': open, 'text-white': {{ $isAdminActive ? 'true' : 'false' }} }"></i>
-                    </button>
-
-                    <div x-show="open" x-collapse class="ml-4 pl-4 border-l border-white/10 space-y-1 mt-1">
+                <!-- Administration Group -->
+                <div>
+                    <div x-show="sidebarOpen" x-transition
+                        class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Administration
+                    </div>
+                    <div class="space-y-1">
                         @can('view-any-users')
                             <a href="{{ route('users.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('users.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('users.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('users.*') ? 'bg-violet-500/40' : 'bg-violet-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-users {{ request()->routeIs('users.*') ? 'text-violet-200' : 'text-violet-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-users text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('users.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">Users</span>
+                                <span x-show="sidebarOpen" x-transition>Users</span>
                             </a>
                         @endcan
 
                         @can('view-any-roles')
                             <a href="{{ route('roles.index') }}" wire:navigate
-                                class="flex items-center space-x-3 p-2 rounded-lg {{ request()->routeIs('roles.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('roles.*') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
                                 <div
-                                    class="h-7 w-7 rounded-lg {{ request()->routeIs('roles.*') ? 'bg-indigo-500/40' : 'bg-indigo-500/20' }} flex items-center justify-center">
-                                    <i
-                                        class="fas fa-user-shield {{ request()->routeIs('roles.*') ? 'text-indigo-200' : 'text-indigo-300' }} text-xs"></i>
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-user-shield text-white text-sm"></i>
                                 </div>
-                                <span
-                                    class="text-sm {{ request()->routeIs('roles.*') ? 'text-white' : 'text-gray-300 group-hover:text-white' }}">Roles</span>
+                                <span x-show="sidebarOpen" x-transition>Roles</span>
+                            </a>
+                        @endcan
+
+                        @can('manage-settings')
+                            <a href="{{ route('settings') }}" wire:navigate
+                                class="flex items-center space-x-3 p-3 rounded-lg {{ request()->routeIs('settings') ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-gray-200 hover:text-white' }}">
+                                <div
+                                    class="h-10 w-10 rounded-lg bg-gradient-to-br from-slate-500 to-gray-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-cog text-white text-sm"></i>
+                                </div>
+                                <span x-show="sidebarOpen" x-transition>Settings</span>
                             </a>
                         @endcan
                     </div>
                 </div>
-
-                <!-- Settings -->
-                @can('manage-settings')
-                    <div class="mt-4">
-                        <a href="{{ route('settings') }}" wire:navigate
-                            class="flex items-center space-x-3 p-3 rounded-xl {{ request()->routeIs('settings') ? 'bg-white/20 text-white' : 'hover:bg-white/10 group' }}">
-                            <div
-                                class="h-9 w-9 rounded-lg {{ request()->routeIs('settings') ? 'bg-gradient-to-br from-gray-700 to-slate-800 ring-2 ring-slate-300' : 'bg-gradient-to-br from-gray-600 to-slate-700' }} flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                <i class="fas fa-cog text-white text-sm"></i>
-                            </div>
-                            <span
-                                class="font-medium {{ request()->routeIs('settings') ? 'text-white' : 'text-gray-200 group-hover:text-white' }}">Settings</span>
-                        </a>
-                    </div>
-                @endcan
             </nav>
+        </aside>
 
-            <!-- PROFILE DROPDOWN -->
-            <div x-data="{ open: false }" class="mt-auto pt-6 border-t border-white/10">
-                <div @click="open = !open"
-                    class="flex items-center space-x-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer group">
-                    <div
-                        class="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                        <i class="fas fa-user text-white"></i>
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 ml-0 transition-all duration-300" :class="sidebarOpen ? 'ml-72' : 'ml-20'">
+            <!-- TOP BAR -->
+            <div class="fixed top-0 right-0 left-0 z-30 bg-white border-b border-gray-200 shadow-sm"
+                :class="sidebarOpen ? 'left-72' : 'left-20'">
+                <div class="flex items-center justify-between px-6 py-3">
+                    <!-- Breadcrumb/Page Title -->
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-800">
+                            @yield('title', 'Dashboard')
+                        </h2>
+                        <p class="text-sm text-gray-600 mt-1">
+                            @yield('subtitle', 'Welcome to Quartz Expense Management System')
+                        </p>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-white">{{ auth()->user()->name ?? 'Administrator' }}</p>
-                        <p class="text-xs text-gray-400/80">{{ auth()->user()->email ?? 'admin@quartz.com' }}</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-gray-400 text-sm transition-transform"
-                        :class="{ 'rotate-180': open }"></i>
-                </div>
-                <div x-show="open" x-transition class="mt-2 bg-white/10 p-3 rounded-xl text-gray-200 space-y-2">
-                    <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10">
-                        <i class="fas fa-user-circle text-sm"></i>
-                        <span>Profile</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10">
-                        <i class="fas fa-cog text-sm"></i>
-                        <span>Settings</span>
-                    </a>
-                    <div class="border-t border-white/10 pt-2">
-                        <livewire:layout.navigation />
+
+                    <!-- Right Side: Notifications, User Profile, Logout -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Notifications -->
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open" @click.away="open = false"
+                                class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 relative">
+                                <i class="fas fa-bell text-gray-600"></i>
+                                <span
+                                    class="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+                            </button>
+                            <!-- Notification Dropdown -->
+                            <div x-show="open" x-transition
+                                class="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                                <div class="px-4 py-3 border-b border-gray-100">
+                                    <h3 class="font-medium text-gray-800">Notifications</h3>
+                                    <p class="text-xs text-gray-500">You have 3 unread notifications</p>
+                                </div>
+                                <div class="max-h-64 overflow-y-auto">
+                                    <!-- Notification Items -->
+                                    <a href="#"
+                                        class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 border-b border-gray-100">
+                                        <div
+                                            class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                            <i class="fas fa-chart-line text-blue-600"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-gray-800">Monthly Report Ready</p>
+                                            <p class="text-xs text-gray-500">5 minutes ago</p>
+                                        </div>
+                                    </a>
+                                    <a href="#"
+                                        class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 border-b border-gray-100">
+                                        <div
+                                            class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                                            <i class="fas fa-check-circle text-green-600"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-gray-800">GRN Approved</p>
+                                            <p class="text-xs text-gray-500">2 hours ago</p>
+                                        </div>
+                                    </a>
+                                    <a href="#" class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50">
+                                        <div
+                                            class="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center">
+                                            <i class="fas fa-exclamation-triangle text-amber-600"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-gray-800">Low Stock Alert</p>
+                                            <p class="text-xs text-gray-500">Yesterday</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <a href="#" class="block text-center py-2 text-sm text-blue-600 hover:bg-gray-50">
+                                    View All Notifications
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- User Profile -->
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open" @click.away="open = false"
+                                class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                                <div
+                                    class="h-9 w-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-sm font-medium text-gray-800">{{ auth()->user()->name ?? 'Admin' }}
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ auth()->user()->role?->name ?? 'Administrator' }}
+                                    </p>
+                                </div>
+                                <i class="fas fa-chevron-down text-gray-400 text-xs"
+                                    :class="{ 'rotate-180': open }"></i>
+                            </button>
+                            <div x-show="open" x-transition
+                                class="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                                <div class="px-4 py-3 border-b border-gray-100">
+                                    <p class="text-sm font-medium text-gray-800">{{ auth()->user()->name ?? 'Admin' }}
+                                    </p>
+                                    <p class="text-xs text-gray-500">{{ auth()->user()->email ?? 'admin@quartz.com' }}
+                                    </p>
+                                </div>
+                                <a href="#" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100">
+                                    <i class="fas fa-user-circle text-gray-600"></i>
+                                    <span>My Profile</span>
+                                </a>
+                                <a href="#" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100">
+                                    <i class="fas fa-cog text-gray-600"></i>
+                                    <span>Account Settings</span>
+                                </a>
+                                <a href="#" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100">
+                                    <i class="fas fa-shield-alt text-gray-600"></i>
+                                    <span>Privacy & Security</span>
+                                </a>
+                                <div class="border-t border-gray-100 pt-2">
+                                    <livewire:layout.navigation />
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="flex-1 overflow-y-auto pt-safe-top pb-safe-bottom">
-            <div class="min-h-screen md:min-h-0">
-
-                <!-- DESKTOP HEADER -->
-                <div class="hidden md:block p-8">
-                    <h2 class="text-3xl font-bold text-gray-800">Welcome back</h2>
-                    <p class="text-gray-600 mt-1">Manage your expenses efficiently</p>
-                </div>
-
-                <!-- CONTENT -->
-                <div class="md:px-8">
-                    <div
-                        class="md:bg-white/80 md:backdrop-blur-sm md:rounded-2xl md:border md:border-white/50 md:shadow-xl md:overflow-hidden">
+            <!-- CONTENT AREA -->
+            <div class="pt-16 min-h-screen">
+                <div class="p-6">
+                    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                         {{ $slot }}
                     </div>
                 </div>
-
-                <div class="h-20 md:h-0"></div>
             </div>
         </main>
     </div>
+
+    <!-- MOBILE CONTENT AREA -->
+    <main class="md:hidden min-h-screen pt-safe-top pb-safe-bottom">
+        <div class="px-4 py-6">
+            <div class="bg-white/90 backdrop-blur-sm rounded-xl border border-gray-200 shadow-lg overflow-hidden">
+                {{ $slot }}
+            </div>
+        </div>
+    </main>
 
     @livewireScripts
 
@@ -737,6 +727,31 @@
                 }
             }));
         });
+
+        // Handle route changes to update active states
+        document.addEventListener('livewire:navigated', () => {
+            setTimeout(() => {
+                const dropdowns = document.querySelectorAll('[x-data*="open"]');
+                dropdowns.forEach(dropdown => {
+                    const dropdownName = dropdown.querySelector('button')?.textContent?.trim().toLowerCase();
+                    const currentPath = window.location.pathname;
+
+                    const pathMapping = {
+                        'metadata': ['categories', 'brands', 'shops', 'units', 'quartzs'],
+                        'goods': ['items', 'grns', 'gdns'],
+                        'financial': ['banks', 'my-expenses'],
+                        'admin': ['users', 'roles', 'settings']
+                    };
+
+                    if (dropdownName && pathMapping[dropdownName]) {
+                        const isActive = pathMapping[dropdownName].some(path => currentPath.includes(path));
+                        if (isActive) {
+                            dropdown.setAttribute('x-data', '{ open: true }');
+                        }
+                    }
+                });
+            }, 100);
+        });
     </script>
 
     <style>
@@ -758,42 +773,63 @@
             display: none !important;
         }
 
-        /* Custom scrollbar for sidebar */
-        aside nav::-webkit-scrollbar {
+        /* Custom scrollbar */
+        .overflow-y-auto::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Sidebar scrollbar */
+        nav::-webkit-scrollbar {
             width: 4px;
         }
 
-        aside nav::-webkit-scrollbar-track {
+        nav::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
         }
 
-        aside nav::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
+        nav::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 4px;
         }
 
-        aside nav::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+        nav::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
         }
 
         /* Active state animations */
-        .active-icon {
-            animation: pulse 2s infinite;
+        .active-nav-item {
+            position: relative;
         }
 
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
-            }
+        .active-nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, #22d3ee, #3b82f6);
+            border-radius: 2px;
+        }
 
-            70% {
-                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
-            }
+        /* Top bar fixed positioning */
+        .fixed {
+            position: fixed;
         }
     </style>
 
