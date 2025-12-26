@@ -13,6 +13,48 @@
         @endcan
     </div>
 
+    <!-- Filters -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Date From</label>
+                <input type="date" wire:model.live="dateFrom"
+                    class="w-full rounded-lg border-gray-200 text-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Date To</label>
+                <input type="date" wire:model.live="dateTo"
+                    class="w-full rounded-lg border-gray-200 text-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Shop</label>
+                <select wire:model.live="selectedShop"
+                    class="w-full rounded-lg border-gray-200 text-sm focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Shops</option>
+                    @foreach ($shops as $shop)
+                        <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Status</label>
+                <select wire:model.live="selectedStatus"
+                    class="w-full rounded-lg border-gray-200 text-sm focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Search</label>
+                <input type="text" wire:model.live.debounce.300ms="searchQuery" placeholder="Search shop or user..."
+                    class="w-full rounded-lg border-gray-200 text-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+    </div>
+
     @if (session()->has('message'))
         <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded shadow-sm" role="alert">
             <p class="font-bold">Success!</p>
@@ -56,7 +98,12 @@
                                 {{ $grn->shop ? $grn->shop->name : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($grn->status === 'confirmed')
+                                @if ($grn->status === 'completed')
+                                    <span
+                                        class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700 border border-blue-200 flex items-center w-fit gap-1">
+                                        <i class="fas fa-check-double text-[10px]"></i> Completed
+                                    </span>
+                                @elseif ($grn->status === 'confirmed')
                                     <span
                                         class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700 border border-green-200 flex items-center w-fit gap-1">
                                         <i class="fas fa-check-circle text-[10px]"></i> Confirmed

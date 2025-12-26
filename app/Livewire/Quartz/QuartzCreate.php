@@ -17,7 +17,7 @@ class QuartzCreate extends Component
     public $processing = false;
 
     protected $rules = [
-        'name' => 'required|string|max:255|unique:quartzes,name',
+        'name' => 'required|string|max:255|unique:quartzs,name',
         'description' => 'nullable|string|max:500',
     ];
 

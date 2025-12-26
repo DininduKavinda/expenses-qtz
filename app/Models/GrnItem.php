@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GrnItem extends Model
 {
-     protected $fillable = ['grn_session_id', 'item_id', 'quantity', 'unit_price', 'total_price'];
+    protected $fillable = ['grn_session_id', 'item_id', 'quantity', 'unit_price', 'total_price'];
 
     public function grnSession()
     {
@@ -16,5 +16,10 @@ class GrnItem extends Model
     public function item()
     {
         return $this->belongsTo(Item::class);
+    }
+
+    public function gdnItems()
+    {
+        return $this->hasMany(GdnItem::class);
     }
 }

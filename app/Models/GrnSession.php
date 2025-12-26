@@ -129,4 +129,16 @@ class GrnSession extends Model
     {
         return $this->belongsTo(BankAccount::class);
     }
+
+    public function checkCompletionStatus()
+    {
+        // Check if all associated expense splits are paid
+        $allPaid = \App\Models\ExpenseSplit::whereHas('grnItem', function ($q) {
+            $q->where('grn_session_id', $this->id);
+        })->where('status', '!=', 'paid')->count() === 0;
+
+        if ($allPaid && $this->status === 'confirmed') {
+            $this->update(['status' => 'completed']);
+        }
+    }
 }

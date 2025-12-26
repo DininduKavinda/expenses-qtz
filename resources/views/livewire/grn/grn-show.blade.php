@@ -98,7 +98,7 @@
                 </div>
 
                 <!-- Confirmation Action -->
-                @if($grn->status !== 'confirmed')
+                @if($grn->confirmed_by === null)
                     <div
                         class="px-6 py-4 bg-yellow-50/50 border-t border-yellow-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                         {{-- <div class="flex-grow w-full sm:w-auto">

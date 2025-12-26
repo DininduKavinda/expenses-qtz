@@ -123,6 +123,17 @@
                                 </div>
 
                                 <div>
+                                    <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-1">Quartz</label>
+                                    <select wire:model="quartz_id" class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition duration-200">
+                                        <option value="">Select Quartz</option>
+                                        @foreach($quartzs as $quartz)
+                                            <option value="{{ $quartz->id }}">{{ $quartz->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('quartz_id') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div>
                                     <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-1">
                                         Password {{ $showEditModal ? '(Leave blank to keep current)' : '' }}
                                     </label>

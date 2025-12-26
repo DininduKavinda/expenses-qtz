@@ -2,9 +2,11 @@
 
 namespace App\Livewire\User;
 
+use App\Models\Quartz;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\UserAccount;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Hash;
@@ -16,12 +18,13 @@ class UserIndex extends Component
     public $showCreateModal = false;
     public $showEditModal = false;
     public $userId;
-    public $name, $email, $role_id, $password, $active = true;
+    public $name, $email, $role_id, $quartz_id, $password, $active = true;
 
     protected $rules = [
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255|unique:users,email',
         'role_id' => 'required|exists:roles,id',
+        'quartz_id' => 'required|exists:quartzs,id',
         'password' => 'required|min:1',
         'active' => 'boolean'
     ];
@@ -37,7 +40,7 @@ class UserIndex extends Component
 
     public function openCreateModal()
     {
-        $this->reset(['name', 'email', 'role_id', 'password', 'active', 'userId']);
+        $this->reset(['name', 'email', 'role_id', 'quartz_id', 'password', 'active', 'userId']);
         $this->active = true;
         $this->showCreateModal = true;
     }
@@ -53,7 +56,7 @@ class UserIndex extends Component
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
                 'role_id' => $this->role_id,
-                'quartz_id' => auth()->user()->quartz_id,
+                'quartz_id' => $this->quartz_id,
                 'active' => $this->active
             ]);
 
@@ -75,6 +78,7 @@ class UserIndex extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         $this->role_id = $user->role_id;
+        $this->quartz_id = $user->quartz_id;
         $this->active = $user->active;
         $this->showEditModal = true;
     }
@@ -88,6 +92,7 @@ class UserIndex extends Component
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $this->userId,
             'role_id' => 'required|exists:roles,id',
+            'quartz_id' => 'required|exists:quartzs,id',
             'active' => 'boolean'
         ]);
 
@@ -95,6 +100,7 @@ class UserIndex extends Component
             'name' => $this->name,
             'email' => $this->email,
             'role_id' => $this->role_id,
+            'quartz_id' => $this->quartz_id,
             'active' => $this->active
         ]);
 
@@ -110,15 +116,21 @@ class UserIndex extends Component
     {
         $this->authorize('viewAny', User::class);
 
-        $users = User::where('quartz_id', auth()->user()->quartz_id)
-            ->with('role')
-            ->paginate(10);
+        if (Auth::user()->role_id == 1) {
+            $users = User::with('role')->paginate(10);
+        } else {
+            $users = User::where('quartz_id', auth()->user()->quartz_id)
+                ->with('role')
+                ->paginate(10);
+        }
 
         $roles = Role::all();
+        $quartzs = Quartz::all();
 
         return view('livewire.user.user-index', [
             'users' => $users,
-            'roles' => $roles
+            'roles' => $roles,
+            'quartzs' => $quartzs
         ]);
     }
 }

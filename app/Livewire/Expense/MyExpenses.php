@@ -186,6 +186,11 @@ class MyExpenses extends Component
                         ['balance' => 0]
                     );
                     $userAccount->decrement('balance', $split->amount);
+
+                    // Trigger completion check for the GRN session
+                    if ($split->grnItem && $split->grnItem->grnSession) {
+                        $split->grnItem->grnSession->checkCompletionStatus();
+                    }
                 } else {
                     // Partial coverage - break for now as per user logic
                     break;

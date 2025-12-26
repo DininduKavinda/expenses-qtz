@@ -17,6 +17,28 @@
 
     <div class="pb-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Filters -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Date From</label>
+                        <input type="date" wire:model.live="dateFrom"
+                            class="w-full rounded-lg border-gray-200 text-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Date To</label>
+                        <input type="date" wire:model.live="dateTo"
+                            class="w-full rounded-lg border-gray-200 text-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Search</label>
+                        <input type="text" wire:model.live.debounce.300ms="searchQuery"
+                            placeholder="Search user or remarks..."
+                            class="w-full rounded-lg border-gray-200 text-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     @if($gdns->isNotEmpty())
@@ -42,24 +64,52 @@
                                     @foreach($gdns as $gdn)
                                         <tr class="hover:bg-gray-50 transition duration-150">
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {{ $gdn->gdn_date->format('Y-M-d') }}
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{ $gdn->gdn_date->format('M d, Y') }}
+                                                </div>
+                                                <div class="text-xs text-gray-500">{{ $gdn->gdn_date->format('g:i A') }}</div>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {{ $gdn->user->name }}
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                                <div class="flex items-center">
+                                                    <div
+                                                        class="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px] font-bold mr-2">
+                                                        {{ substr($gdn->user->name, 0, 1) }}
+                                                    </div>
+                                                    <span>{{ $gdn->user->name }}</span>
+                                                </div>
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-500">
-                                                <div class="flex flex-wrap gap-1">
-                                                    @foreach($gdn->gdnItems as $gdnItem)
-                                                        <span
-                                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
-                                                            {{ $gdnItem->grnItem->item->name }}
-                                                            ({{ number_format($gdnItem->quantity, 0) }})
-                                                        </span>
+                                                <div class="space-y-2">
+                                                    @php
+                                                        $groupedBySession = $gdn->gdnItems->groupBy(function ($gi) {
+                                                            return $gi->grnItem->grnSession->id;
+                                                        });
+                                                    @endphp
+                                                    @foreach($groupedBySession as $sessionId => $items)
+                                                        @php $session = $items->first()->grnItem->grnSession; @endphp
+                                                        <div class="bg-gray-50 rounded p-2 border border-gray-100">
+                                                            <div
+                                                                class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-1">
+                                                                FROM: {{ $session->shop->name }}
+                                                                ({{ $session->session_date->format('M d') }})
+                                                            </div>
+                                                            <div class="flex flex-wrap gap-1">
+                                                                @foreach($items as $gdnItem)
+                                                                    <span
+                                                                        class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-white text-indigo-700 border border-indigo-100 shadow-sm">
+                                                                        {{ $gdnItem->grnItem->item->name }}
+                                                                        ({{ number_format($gdnItem->quantity, 0) }})
+                                                                    </span>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
                                                     @endforeach
                                                 </div>
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 italic">
-                                                {{ $gdn->remarks ?: '-' }}
+                                            <td class="px-6 py-4 text-sm text-gray-600">
+                                                <p class="max-w-xs truncate" title="{{ $gdn->remarks }}">
+                                                    {{ $gdn->remarks ?: '-' }}
+                                                </p>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -72,8 +122,10 @@
                             <p>No Despatch Notes yet.</p>
                         </div>
                     @endif
+                    <div class="mt-4">
+                        {{ $gdns->links() }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
